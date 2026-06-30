@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>超级API平台 - 额度充值</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans SC"', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              200: '#a5f3fc',
+              300: '#67e8f9',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+              700: '#0e7490',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up { animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .delay-100 { animation-delay: 0.08s; }
+    .delay-200 { animation-delay: 0.16s; }
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .modal-backdrop { opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+    .modal-backdrop.active { opacity: 1; pointer-events: auto; }
+    .modal-panel { transform: scale(0.96) translateY(10px); opacity: 0; transition: all 0.25s ease; }
+    .modal-backdrop.active .modal-panel { transform: scale(1) translateY(0); opacity: 1; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden">
+
+  <!-- Top Navbar -->
+  <header class="h-16 bg-white/90 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-20">
+    <div class="flex items-center gap-10">
+      <a href="index.html" class="flex items-center gap-2.5 group">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-shadow">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <span class="text-lg font-bold tracking-tight text-slate-900">超级API平台</span>
+      </a>
+      <span class="px-2 py-0.5 text-xs font-medium text-brand-700 bg-brand-50 border border-brand-200 rounded">自用模式</span>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">首页</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg transition-colors">控制台</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">模型广场</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">文档</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">关于</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="relative p-2 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+      </button>
+      <button class="relative p-2 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+      </button>
+      <button class="p-2 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+      </button>
+      <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-300 to-orange-400 flex items-center justify-center text-white text-xs font-bold shadow-sm">X</div>
+        <span class="text-sm font-medium text-slate-700">xiaomao</span>
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Global Sidebar -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col overflow-y-auto shrink-0">
+      <div class="p-4 space-y-6">
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">聊天</div>
+          <nav class="mt-1 space-y-1">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              操练场
+            </a>
+            <a href="#" class="flex items-center justify-between px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors group">
+              <div class="flex items-center gap-3">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                聊天
+              </div>
+              <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+            </a>
+          </nav>
+        </div>
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">控制台</div>
+          <nav class="mt-1 space-y-1">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+              数据看板
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+              令牌管理
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+              使用日志
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              绘图日志
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              任务日志
+            </a>
+          </nav>
+        </div>
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">企业管理</div>
+          <nav class="mt-1 space-y-1">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              企业认证
+            </a>
+            <a href="index.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+              企业员工管理
+            </a>
+            <a href="model-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+              模型管理
+            </a>
+          </nav>
+        </div>
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">财务管理</div>
+          <nav class="mt-1 space-y-1">
+            <a href="quota-recharge.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-brand-700 bg-brand-50 rounded-lg border-l-4 border-brand-500 transition-colors">
+              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              额度充值
+            </a>
+            <a href="recharge-bills.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
+              充值账单
+            </a>
+            <a href="invoice-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              发票管理
+            </a>
+          </nav>
+        </div>
+      </div>
+      <div class="mt-auto p-4 border-t border-slate-100">
+        <button class="flex items-center gap-2 text-sm text-slate-500 hover:text-brand-600 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
+          收起侧边栏
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-auto p-6 bg-slate-50">
+      <!-- 两栏布局 -->
+      <div class="flex flex-col lg:flex-row gap-5 mb-5">
+        <!-- 左侧主充值区 -->
+        <div class="flex-1 min-w-0">
+          <!-- 充值卡片 -->
+          <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden animate-fade-up">
+            <!-- 余额横幅 -->
+            <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-brand-500/5 to-brand-500/10 border-b border-brand-100/50">
+              <div class="flex items-center gap-6">
+                <div>
+                  <span class="text-xs text-slate-500">总余额</span>
+                  <div class="text-2xl font-bold text-slate-900">¥ 1,253.36</div>
+                </div>
+                <div class="flex items-center gap-4 pl-6 border-l border-slate-200">
+                  <div>
+                    <span class="text-[10px] text-slate-400">充值余额</span>
+                    <div class="font-semibold text-slate-700">1,000.00</div>
+                  </div>
+                  <div>
+                    <span class="text-[10px] text-slate-400">权益余额</span>
+                    <div class="font-semibold text-slate-700">253.36</div>
+                  </div>
+                </div>
+              </div>
+              <button id="open-alert-modal" type="button" class="px-3 py-1.5 text-xs font-medium text-brand-600 bg-brand-50 hover:bg-brand-100 border border-brand-200 rounded-lg transition-colors active:scale-95">设置告警</button>
+            </div>
+
+            <!-- 充值表单 -->
+            <div class="p-6">
+              <!-- 充值数量和支付方式 -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- 充值数量 -->
+                <div>
+                  <label class="block text-sm font-medium text-slate-900 mb-3">充值数量</label>
+                  <div class="flex items-center">
+                    <div class="flex items-center bg-slate-50 border border-slate-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-brand-500/20 focus-within:border-brand-500">
+                      <span class="px-3 text-sm text-slate-500">¥</span>
+                      <input id="recharge-qty" type="number" value="1" min="1" class="w-28 px-2 py-2.5 text-sm bg-transparent border-0 focus:outline-none" placeholder="最低¥1.00">
+                      <div class="flex flex-col border-l border-slate-200">
+                        <button onclick="adjustQty(1)" class="px-2.5 py-1 hover:bg-slate-100 text-slate-500 text-xs">▲</button>
+                        <button onclick="adjustQty(-1)" class="px-2.5 py-1 hover:bg-slate-100 border-t border-slate-200 text-slate-500 text-xs">▼</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mt-3 text-sm text-slate-500">实付金额：<span id="total-paid-display" class="text-brand-600 font-bold text-lg">1.00</span> 元</div>
+                </div>
+
+                <!-- 支付方式 -->
+                <div>
+                  <label class="block text-sm font-medium text-slate-900 mb-3">选择支付方式</label>
+                  <div class="flex flex-wrap gap-2">
+                    <label class="payment-method cursor-pointer">
+                      <input type="radio" name="payment" value="alipay" class="peer sr-only">
+                      <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:ring-1 peer-checked:ring-brand-500/20 transition-all">
+                        <svg class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        <span class="text-sm font-medium text-slate-700 peer-checked:text-brand-700">支付宝</span>
+                      </div>
+                    </label>
+                    <label class="payment-method cursor-pointer">
+                      <input type="radio" name="payment" value="wechat" class="peer sr-only">
+                      <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:ring-1 peer-checked:ring-brand-500/20 transition-all">
+                        <svg class="w-5 h-5 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                        <span class="text-sm font-medium text-slate-700 peer-checked:text-brand-700">微信</span>
+                      </div>
+                    </label>
+                    <label class="payment-method cursor-pointer">
+                      <input type="radio" name="payment" value="transfer" class="peer sr-only">
+                      <div class="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-slate-200 bg-white hover:border-amber-300 peer-checked:border-amber-500 peer-checked:bg-amber-50 peer-checked:ring-1 peer-checked:ring-amber-500/20 transition-all">
+                        <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        <span class="text-sm font-medium text-slate-700 peer-checked:text-amber-700">对公转账</span>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 充值额度选择 -->
+              <div>
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="text-sm font-medium text-slate-900">选择充值额度</span>
+                  <span class="text-xs text-slate-400">(1 $ = 1.00 ¥)</span>
+                </div>
+                <div class="grid grid-cols-3 sm:grid-cols-6 gap-3">
+                  <label class="amount-card cursor-pointer relative">
+                    <input type="radio" name="amount" value="10" class="peer sr-only">
+                    <div class="px-3 py-4 rounded-lg border border-slate-200 bg-white hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:ring-1 peer-checked:ring-brand-500/20 transition-all text-center">
+                      <div class="text-lg font-bold text-slate-800 peer-checked:text-brand-700">10 ¥</div>
+                      <div class="text-xs text-slate-400 mt-1">实付 ¥10.00</div>
+                      <div class="text-xs text-slate-400">无优惠</div>
+                    </div>
+                  </label>
+                  <label class="amount-card cursor-pointer relative">
+                    <input type="radio" name="amount" value="20" class="peer sr-only">
+                    <div class="px-3 py-4 rounded-lg border border-slate-200 bg-white hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:ring-1 peer-checked:ring-brand-500/20 transition-all text-center">
+                      <div class="text-lg font-bold text-slate-800 peer-checked:text-brand-700">20 ¥</div>
+                      <div class="text-xs text-slate-400 mt-1">实付 ¥20.00</div>
+                      <div class="text-xs text-slate-400">无优惠</div>
+                    </div>
+                  </label>
+                  <label class="amount-card cursor-pointer relative">
+                    <input type="radio" name="amount" value="50" class="peer sr-only">
+                    <div class="px-3 py-4 rounded-lg border border-slate-200 bg-white hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:ring-1 peer-checked:ring-brand-500/20 transition-all text-center">
+                      <div class="text-lg font-bold text-slate-800 peer-checked:text-brand-700">50 ¥</div>
+                      <div class="text-xs text-slate-400 mt-1">实付 ¥50.00</div>
+                      <div class="text-xs text-slate-400">无优惠</div>
+                    </div>
+                  </label>
+                  <label class="amount-card cursor-pointer relative">
+                    <input type="radio" name="amount" value="100" class="peer sr-only">
+                    <div class="px-3 py-4 rounded-lg border border-slate-200 bg-white hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:ring-1 peer-checked:ring-brand-500/20 transition-all text-center">
+                      <span class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-full">9.5折</span>
+                      <div class="text-lg font-bold text-slate-800 peer-checked:text-brand-700">100 ¥</div>
+                      <div class="text-xs text-slate-400 mt-1">实付 ¥95.00</div>
+                      <div class="text-xs text-emerald-500">省 ¥5.00</div>
+                    </div>
+                  </label>
+                  <label class="amount-card cursor-pointer relative">
+                    <input type="radio" name="amount" value="200" class="peer sr-only">
+                    <div class="px-3 py-4 rounded-lg border border-slate-200 bg-white hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:ring-1 peer-checked:ring-brand-500/20 transition-all text-center">
+                      <span class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-full">9.0折</span>
+                      <div class="text-lg font-bold text-slate-800 peer-checked:text-brand-700">200 ¥</div>
+                      <div class="text-xs text-slate-400 mt-1">实付 ¥180.00</div>
+                      <div class="text-xs text-emerald-500">省 ¥20.00</div>
+                    </div>
+                  </label>
+                  <label class="amount-card cursor-pointer relative">
+                    <input type="radio" name="amount" value="500" class="peer sr-only">
+                    <div class="px-3 py-4 rounded-lg border border-slate-200 bg-white hover:border-brand-300 peer-checked:border-brand-500 peer-checked:bg-brand-50 peer-checked:ring-1 peer-checked:ring-brand-500/20 transition-all text-center">
+                      <span class="absolute -top-2 -right-2 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-100 border border-emerald-200 rounded-full">8.5折</span>
+                      <div class="text-lg font-bold text-slate-800 peer-checked:text-brand-700">500 ¥</div>
+                      <div class="text-xs text-slate-400 mt-1">实付 ¥425.00</div>
+                      <div class="text-xs text-emerald-500">省 ¥75.00</div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 右侧边栏 -->
+        <div class="w-full lg:w-72 shrink-0 space-y-5">
+          <!-- 兑换码充值 -->
+          <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-5 animate-fade-up delay-100">
+            <h3 class="text-sm font-semibold text-slate-900 mb-4 flex items-center gap-2">
+              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path></svg>
+              兑换码充值
+            </h3>
+            <div class="relative mb-3">
+              <input type="text" class="w-full px-3 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all" placeholder="请输入兑换码">
+            </div>
+            <button class="w-full py-2.5 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-colors active:scale-95">兑换额度</button>
+          </div>
+
+          <!-- 充值记录快捷入口 -->
+          <a href="recharge-bills.html" class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-5 block hover:border-brand-300 hover:shadow-md transition-all animate-fade-up delay-200">
+            <h3 class="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
+              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              充值账单
+            </h3>
+            <p class="text-xs text-slate-400 leading-relaxed">查看充值记录、审核进度及退款明细</p>
+            <div class="flex items-center gap-1 mt-3 text-xs text-brand-600 font-medium">
+              前往查看
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+            </div>
+          </a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 设置告警 Modal -->
+  <div id="alert-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div class="modal-panel bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <div class="flex items-center gap-2">
+          <h3 class="text-base font-bold text-slate-900">设置告警</h3>
+          <button id="toggle-alert-note" type="button" class="p-1 text-amber-500 hover:text-amber-600 hover:bg-amber-50 rounded-full transition-colors" title="查看开发说明">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          </button>
+        </div>
+        <button id="close-alert-modal" type="button" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <div class="px-6 py-5 space-y-5">
+        <div class="text-sm text-slate-600 leading-relaxed bg-slate-50 rounded-lg p-4 border border-slate-100">
+          <p class="font-medium text-slate-800 mb-2">当总余额低于近30天日均消耗*预期安全天数时，触发短信告警</p>
+          <p>举例，预期安全天数为3天，近30天日均消耗1000额度，如果当前余额低于3*1000=3000，即低于3000时，则触发短信告警通知（24小时只发送一次）</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-slate-900 mb-1.5">
+            预期安全天数 <span class="text-rose-500">*</span>
+          </label>
+          <input type="number" min="1" placeholder="请输入预期安全天数" class="w-full px-3 py-2.5 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all placeholder:text-slate-400">
+        </div>
+      </div>
+      <div class="flex items-center justify-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+        <button id="submit-alert" type="button" class="px-6 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-all active:scale-95">提交</button>
+        <button id="cancel-alert" type="button" class="px-6 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-all active:scale-95">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 开发与测试标注弹窗 -->
+  <div id="alert-note-modal" class="modal-backdrop fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div class="modal-panel bg-white rounded-xl shadow-2xl w-full max-w-xl mx-4 overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          开发说明
+        </h3>
+        <button id="close-alert-note-modal" type="button" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="px-6 py-5">
+        <div class="text-sm text-amber-900 bg-amber-50 border border-amber-200 rounded-lg p-4 space-y-3 leading-relaxed">
+          <p class="font-semibold">实时判断余额</p>
+          <p class="font-medium text-slate-700">短信模板提示如下：</p>
+          <div class="space-y-2 text-slate-600">
+            <p><span class="font-semibold text-amber-800">1. 预计可用小于1天</span><br>【XX平台】紧急通知：您的账户（企业名称）余额预计仅可支撑不足1天消耗，即将触发停服！请立即充值，以免影响API调用。</p>
+            <p><span class="font-semibold text-amber-800">2. 预计可用小于2天</span><br>【XX平台】警告：您的账户（企业名称）余额预计仅可支撑不足2天消耗，请于今日内安排续充，避免业务中断。</p>
+            <p><span class="font-semibold text-amber-800">3. 预计可用小于3天</span><br>【XX平台】提醒：您的账户（企业名称）余额预计仅可支撑不足3天消耗，建议提前续充，保障业务稳定运行。</p>
+            <p><span class="font-semibold text-amber-800">4. 普通提示</span><br>【XX平台】提示：您的账户（企业名称）当前余额预计可支撑 X 天消耗（余额低于安全阈值），建议关注消耗进度，合理规划续充。</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center justify-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+        <button id="confirm-alert-note" type="button" class="px-6 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-all active:scale-95">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 充值确认 Modal -->
+  <div id="recharge-confirm-modal" class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div class="modal-panel bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          充值确认
+        </h3>
+        <button id="close-recharge-confirm" type="button" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="px-6 py-5 space-y-4">
+        <div class="space-y-2 text-sm">
+          <div class="flex justify-between">
+            <span class="text-slate-500">充值数量：</span>
+            <span class="font-medium text-slate-900">¥<span id="confirm-amount">2000.00</span></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">实付金额：</span>
+            <span class="font-medium text-rose-500"><span id="confirm-pay">1700</span> 元 <span id="confirm-discount" class="text-xs text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">85折</span></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">原价：</span>
+            <span class="font-medium text-slate-900">¥<span id="confirm-original">2000.00</span></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">优惠：</span>
+            <span class="font-medium text-slate-900">-¥<span id="confirm-save">300.00</span></span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500">支付方式：</span>
+            <span id="confirm-payment-method" class="flex items-center gap-1.5 text-sm text-slate-700">
+              <svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+              对公转账
+            </span>
+          </div>
+        </div>
+
+        <div id="confirm-bank-info" class="border-t border-dashed border-slate-200 pt-4">
+          <p class="text-sm font-semibold text-slate-900 mb-2">对公转账信息</p>
+          <div class="space-y-1.5 text-sm">
+            <div class="flex justify-between">
+              <span class="text-slate-500">收款方户名</span>
+              <span class="text-slate-900">广东冲电狼科技有限公司</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">收款方账号</span>
+              <span class="text-slate-900">8888888888888888</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-500">开户行名称</span>
+              <span class="text-slate-900">中国银行东莞分公司</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="confirm-screenshot" class="border-t border-slate-100 pt-4">
+          <label class="block text-sm font-medium text-slate-900 mb-2">
+            支付截图 <span class="text-rose-500">*</span>
+            <span class="text-xs font-normal text-rose-400">（请确保实付支付金额为<span id="confirm-pay-tip">1700</span>元，否则可能会影响审核时长）</span>
+          </label>
+          <div class="w-24 h-24 border-2 border-dashed border-slate-300 rounded-lg flex items-center justify-center cursor-pointer hover:border-brand-400 hover:bg-brand-50/30 transition-colors">
+            <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+          </div>
+        </div>
+
+        <div id="confirm-remark">
+          <label class="block text-sm font-medium text-slate-900 mb-1.5">备注</label>
+          <textarea rows="3" class="w-full px-3 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-none" placeholder=""></textarea>
+        </div>
+      </div>
+      <div class="flex items-center justify-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+        <button id="cancel-recharge-confirm" type="button" class="px-6 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-all active:scale-95">取消</button>
+        <button id="submit-recharge-confirm" type="button" class="px-6 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-all active:scale-95">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function adjustQty(delta) {
+      const input = document.getElementById('recharge-qty');
+      let val = parseInt(input.value) || 0;
+      val = Math.max(1, val + delta);
+      input.value = val;
+    }
+
+    // 设置告警弹窗
+    const alertModal = document.getElementById('alert-modal');
+    const openAlertModal = document.getElementById('open-alert-modal');
+    const closeAlertModal = document.getElementById('close-alert-modal');
+    const cancelAlert = document.getElementById('cancel-alert');
+    const submitAlert = document.getElementById('submit-alert');
+    const toggleAlertNote = document.getElementById('toggle-alert-note');
+    const alertNoteModal = document.getElementById('alert-note-modal');
+    const closeAlertNoteModal = document.getElementById('close-alert-note-modal');
+    const confirmAlertNote = document.getElementById('confirm-alert-note');
+
+    function showAlertModal() { alertModal.classList.add('active'); }
+    function hideAlertModal() { alertModal.classList.remove('active'); }
+    function showAlertNoteModal() { alertNoteModal.classList.add('active'); }
+    function hideAlertNoteModal() { alertNoteModal.classList.remove('active'); }
+
+    openAlertModal.addEventListener('click', showAlertModal);
+    closeAlertModal.addEventListener('click', hideAlertModal);
+    cancelAlert.addEventListener('click', hideAlertModal);
+    submitAlert.addEventListener('click', () => {
+      alert('设置成功');
+      hideAlertModal();
+    });
+    alertModal.addEventListener('click', (e) => {
+      if (e.target === alertModal) hideAlertModal();
+    });
+
+    toggleAlertNote.addEventListener('click', showAlertNoteModal);
+    closeAlertNoteModal.addEventListener('click', hideAlertNoteModal);
+    confirmAlertNote.addEventListener('click', hideAlertNoteModal);
+    alertNoteModal.addEventListener('click', (e) => {
+      if (e.target === alertNoteModal) hideAlertNoteModal();
+    });
+
+    // 充值确认弹窗
+    const rechargeConfirmModal = document.getElementById('recharge-confirm-modal');
+    const closeRechargeConfirm = document.getElementById('close-recharge-confirm');
+    const cancelRechargeConfirm = document.getElementById('cancel-recharge-confirm');
+    const submitRechargeConfirm = document.getElementById('submit-recharge-confirm');
+    const transferPayment = document.querySelector('input[name="payment"][value="transfer"]');
+    const alipayPayment = document.querySelector('input[name="payment"][value="alipay"]');
+    const wechatPayment = document.querySelector('input[name="payment"][value="wechat"]');
+
+    const amountMap = {
+      '10':  { amount: 10,  pay: 10,   original: 10,  save: 0,  discount: null },
+      '20':  { amount: 20,  pay: 20,   original: 20,  save: 0,  discount: null },
+      '50':  { amount: 50,  pay: 50,   original: 50,  save: 0,  discount: null },
+      '100': { amount: 100, pay: 95,   original: 100, save: 5,  discount: '9.5折' },
+      '200': { amount: 200, pay: 180,  original: 200, save: 20, discount: '9.0折' },
+      '500': { amount: 500, pay: 425,  original: 500, save: 75, discount: '8.5折' }
+    };
+
+    const paymentConfig = {
+      'transfer': { name: '对公转账', iconColor: 'text-amber-500', iconSvg: '<svg class="w-4 h-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>', showExtra: true },
+      'alipay':   { name: '支付宝',   iconColor: 'text-blue-500',  iconSvg: '<svg class="w-4 h-4 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path fill="#fff" d="M12.5 7.5c-2.5 0-4.6 1.6-5.4 3.9-.1.3-.1.6-.1.9 0 2.5 2 4.5 4.5 4.5s4.5-2 4.5-4.5c0-.3 0-.6-.1-.9-.8-2.3-2.9-3.9-5.4-3.9zm0 7c-1.4 0-2.5-1.1-2.5-2.5s1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5-1.1 2.5-2.5 2.5z"/></svg>', showExtra: false },
+      'wechat':   { name: '微信',     iconColor: 'text-emerald-500', iconSvg: '<svg class="w-4 h-4 text-emerald-500" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><path fill="#fff" d="M12.5 7.5c-2.5 0-4.6 1.6-5.4 3.9-.1.3-.1.6-.1.9 0 2.5 2 4.5 4.5 4.5s4.5-2 4.5-4.5c0-.3 0-.6-.1-.9-.8-2.3-2.9-3.9-5.4-3.9zm0 7c-1.4 0-2.5-1.1-2.5-2.5s1.1-2.5 2.5-2.5 2.5 1.1 2.5 2.5-1.1 2.5-2.5 2.5z"/></svg>', showExtra: false }
+    };
+
+    function showRechargeConfirmModal(method) {
+      const cfg = paymentConfig[method] || paymentConfig['transfer'];
+      const selectedAmount = document.querySelector('input[name="amount"]:checked');
+      const info = selectedAmount ? amountMap[selectedAmount.value] : amountMap['500'];
+
+      document.getElementById('confirm-amount').textContent = info.amount.toFixed(2);
+      document.getElementById('confirm-pay').textContent = info.pay;
+      document.getElementById('confirm-original').textContent = info.original.toFixed(2);
+      document.getElementById('confirm-save').textContent = info.save.toFixed(2);
+      document.getElementById('confirm-pay-tip').textContent = info.pay;
+
+      const discountTag = document.getElementById('confirm-discount');
+      if (info.discount) {
+        discountTag.textContent = info.discount;
+        discountTag.classList.remove('hidden');
+      } else {
+        discountTag.classList.add('hidden');
+      }
+
+      document.getElementById('confirm-payment-method').innerHTML = cfg.iconSvg + '<span>' + cfg.name + '</span>';
+
+      const bankInfo = document.getElementById('confirm-bank-info');
+      const screenshot = document.getElementById('confirm-screenshot');
+      const remark = document.getElementById('confirm-remark');
+      if (cfg.showExtra) {
+        bankInfo.classList.remove('hidden');
+        screenshot.classList.remove('hidden');
+        remark.classList.remove('hidden');
+      } else {
+        bankInfo.classList.add('hidden');
+        screenshot.classList.add('hidden');
+        remark.classList.add('hidden');
+      }
+
+      rechargeConfirmModal.classList.add('active');
+    }
+
+    function hideRechargeConfirmModal() {
+      rechargeConfirmModal.classList.remove('active');
+    }
+
+    transferPayment.addEventListener('click', () => showRechargeConfirmModal('transfer'));
+    alipayPayment.addEventListener('click', () => showRechargeConfirmModal('alipay'));
+    wechatPayment.addEventListener('click', () => showRechargeConfirmModal('wechat'));
+    closeRechargeConfirm.addEventListener('click', hideRechargeConfirmModal);
+    cancelRechargeConfirm.addEventListener('click', hideRechargeConfirmModal);
+    submitRechargeConfirm.addEventListener('click', () => {
+      alert('提交成功');
+      hideRechargeConfirmModal();
+    });
+    rechargeConfirmModal.addEventListener('click', (e) => {
+      if (e.target === rechargeConfirmModal) hideRechargeConfirmModal();
+    });
+  </script>
+</body>
+</html>

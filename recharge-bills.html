@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>超级API平台 - 充值账单</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans SC"', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              200: '#a5f3fc',
+              300: '#67e8f9',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+              700: '#0e7490',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-up { animation: fadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .delay-100 { animation-delay: 0.08s; }
+    .delay-200 { animation-delay: 0.16s; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden">
+
+  <!-- Top Navbar -->
+  <header class="h-16 bg-white/90 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-20">
+    <div class="flex items-center gap-10">
+      <a href="index.html" class="flex items-center gap-2.5 group">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-shadow">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <span class="text-lg font-bold tracking-tight text-slate-900">超级API平台</span>
+      </a>
+      <span class="px-2 py-0.5 text-xs font-medium text-brand-700 bg-brand-50 border border-brand-200 rounded">自用模式</span>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">首页</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg transition-colors">控制台</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">模型广场</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">文档</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">关于</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="relative p-2 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+      </button>
+      <button class="relative p-2 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+      </button>
+      <button class="p-2 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+      </button>
+      <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-300 to-orange-400 flex items-center justify-center text-white text-xs font-bold shadow-sm">X</div>
+        <span class="text-sm font-medium text-slate-700">xiaomao</span>
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Global Sidebar -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col overflow-y-auto shrink-0">
+      <div class="p-4 space-y-6">
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">聊天</div>
+          <nav class="mt-1 space-y-1">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              操练场
+            </a>
+            <a href="#" class="flex items-center justify-between px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors group">
+              <div class="flex items-center gap-3">
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                聊天
+              </div>
+              <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+            </a>
+          </nav>
+        </div>
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">控制台</div>
+          <nav class="mt-1 space-y-1">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+              数据看板
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+              令牌管理
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+              使用日志
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              绘图日志
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              任务日志
+            </a>
+          </nav>
+        </div>
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">企业管理</div>
+          <nav class="mt-1 space-y-1">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              企业认证
+            </a>
+            <a href="index.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+              企业员工管理
+            </a>
+            <a href="model-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+              模型管理
+            </a>
+          </nav>
+        </div>
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">财务管理</div>
+          <nav class="mt-1 space-y-1">
+            <a href="quota-recharge.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              额度充值
+            </a>
+            <a href="recharge-bills.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-brand-700 bg-brand-50 rounded-lg border-l-4 border-brand-500 transition-colors">
+              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
+              充值账单
+            </a>
+            <a href="invoice-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              发票管理
+            </a>
+          </nav>
+        </div>
+      </div>
+      <div class="mt-auto p-4 border-t border-slate-100">
+        <button class="flex items-center gap-2 text-sm text-slate-500 hover:text-brand-600 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
+          收起侧边栏
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-auto p-6 bg-slate-50">
+      <!-- Filter Bar -->
+      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-5 mb-5 animate-fade-up">
+        <div class="flex flex-wrap items-center gap-3">
+          <input type="text" placeholder="请输入订单号" class="w-44 px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all placeholder:text-slate-400">
+          <select class="w-44 px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all text-slate-600">
+            <option>请选择支付方式</option>
+            <option>微信</option>
+            <option>支付宝</option>
+            <option>对公转账</option>
+          </select>
+          <select class="w-44 px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all text-slate-600">
+            <option>请选择支付状态</option>
+            <option>支付中</option>
+            <option>待核账</option>
+            <option>已支付</option>
+            <option>已取消</option>
+            <option>全部退款</option>
+            <option>部分退款</option>
+            <option>支付失败</option>
+          </select>
+          <div class="relative">
+            <input type="text" placeholder="请选择创建时间" class="w-44 px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all placeholder:text-slate-400">
+            <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          </div>
+          <div class="flex items-center gap-2 ml-auto">
+            <button class="px-5 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-all active:scale-95">搜索</button>
+            <button class="px-5 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all active:scale-95">重置</button>
+            <button class="px-5 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-all active:scale-95">导出</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bills Card -->
+      <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden animate-fade-up delay-100">
+        <div class="p-5 border-b border-slate-100">
+          <h2 class="text-base font-bold text-slate-900 mb-1">充值账单</h2>
+          <div class="text-xs text-slate-500 leading-relaxed">
+            <div>说明：</div>
+            <div>1. 总额度 = 充值余额 + 权益余额</div>
+            <div>2. 充值余额 = 充值时的实付金额</div>
+            <div>3. 权益余额 = 充值时的折扣金额</div>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-center">
+            <thead class="bg-slate-50 text-slate-700 font-semibold">
+              <tr>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">订单号</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">支付方式</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">总额度</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">充值余额</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">权益余额</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">实付金额</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">退款金额</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium text-rose-500">图片</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium text-rose-500">支付备注</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">状态</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">审核备注</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">审核时间</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">创建时间</th>
+                <th class="px-4 py-3.5 border-b border-slate-100 font-medium">操作<button id="open-op-note" type="button" class="inline-flex items-center ml-1 p-0.5 text-amber-500 hover:text-amber-600 hover:bg-amber-50 rounded transition-colors" title="开发备注"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button></th>
+              </tr>
+            </thead>
+            <tbody class="text-slate-600 divide-y divide-slate-100">
+              <tr class="hover:bg-slate-50/60 transition-colors">
+                <td class="px-4 py-4">ORD202606080001</td>
+                <td class="px-4 py-4">微信</td>
+                <td class="px-4 py-4">100.00</td>
+                <td class="px-4 py-4">95.00</td>
+                <td class="px-4 py-4">5.00</td>
+                <td class="px-4 py-4">95.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">支付中</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">2026-06-08 08:55:16</td>
+                <td class="px-4 py-4"><button class="cancel-order-btn text-brand-600 hover:text-brand-700 hover:underline">取消</button></td>
+              </tr>
+              <tr class="hover:bg-slate-50/60 transition-colors">
+                <td class="px-4 py-4">ORD202606070002</td>
+                <td class="px-4 py-4">支付宝</td>
+                <td class="px-4 py-4">200.00</td>
+                <td class="px-4 py-4">180.00</td>
+                <td class="px-4 py-4">20.00</td>
+                <td class="px-4 py-4">180.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4"><button class="text-brand-600 hover:underline text-xs">查看</button></td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">待核账</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">2026-06-07 14:22:08</td>
+                <td class="px-4 py-4"><button class="cancel-order-btn text-brand-600 hover:text-brand-700 hover:underline">取消</button></td>
+              </tr>
+              <tr class="hover:bg-slate-50/60 transition-colors">
+                <td class="px-4 py-4">ORD202606060003</td>
+                <td class="px-4 py-4">对公转账</td>
+                <td class="px-4 py-4">500.00</td>
+                <td class="px-4 py-4">425.00</td>
+                <td class="px-4 py-4">75.00</td>
+                <td class="px-4 py-4">425.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4"><button class="text-brand-600 hover:underline text-xs">查看</button></td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">已支付</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">2026-06-06 16:40:33</td>
+                <td class="px-4 py-4">2026-06-06 09:12:15</td>
+                <td class="px-4 py-4">-</td>
+              </tr>
+              <tr class="hover:bg-slate-50/60 transition-colors">
+                <td class="px-4 py-4">ORD202606050004</td>
+                <td class="px-4 py-4">微信</td>
+                <td class="px-4 py-4">50.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">已取消</td>
+                <td class="px-4 py-4">用户取消</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">2026-06-05 11:08:47</td>
+                <td class="px-4 py-4">-</td>
+              </tr>
+              <tr class="hover:bg-slate-50/60 transition-colors">
+                <td class="px-4 py-4">ORD202606040005</td>
+                <td class="px-4 py-4">支付宝</td>
+                <td class="px-4 py-4">100.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">95.00</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">全部退款</td>
+                <td class="px-4 py-4">重复下单</td>
+                <td class="px-4 py-4">2026-06-04 17:55:21</td>
+                <td class="px-4 py-4">2026-06-04 10:30:12</td>
+                <td class="px-4 py-4">-</td>
+              </tr>
+              <tr class="hover:bg-slate-50/60 transition-colors">
+                <td class="px-4 py-4">ORD202606030006</td>
+                <td class="px-4 py-4">微信</td>
+                <td class="px-4 py-4">200.00</td>
+                <td class="px-4 py-4">90.00</td>
+                <td class="px-4 py-4">10.00</td>
+                <td class="px-4 py-4">90.00</td>
+                <td class="px-4 py-4">90.00</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">部分退款</td>
+                <td class="px-4 py-4">金额异议</td>
+                <td class="px-4 py-4">2026-06-03 15:18:09</td>
+                <td class="px-4 py-4">2026-06-03 08:45:56</td>
+                <td class="px-4 py-4">-</td>
+              </tr>
+              <tr class="hover:bg-slate-50/60 transition-colors">
+                <td class="px-4 py-4">ORD202606020007</td>
+                <td class="px-4 py-4">对公转账</td>
+                <td class="px-4 py-4">1000.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">0.00</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">支付失败</td>
+                <td class="px-4 py-4">银行退回</td>
+                <td class="px-4 py-4">-</td>
+                <td class="px-4 py-4">2026-06-02 13:25:40</td>
+                <td class="px-4 py-4">-</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- 金额统计 -->
+        <div id="amount-stats" class="flex items-center gap-6 px-5 py-3 border-t border-slate-100 bg-slate-50/80">
+          <div class="flex items-center gap-1.5 text-xs"><span class="text-slate-500">总额度</span><span id="stat-total-quota" class="font-semibold text-slate-900">¥0.00</span></div>
+          <div class="w-px h-4 bg-slate-200"></div>
+          <div class="flex items-center gap-1.5 text-xs"><span class="text-slate-500">充值余额</span><span id="stat-recharge-balance" class="font-semibold text-slate-900">¥0.00</span></div>
+          <div class="w-px h-4 bg-slate-200"></div>
+          <div class="flex items-center gap-1.5 text-xs"><span class="text-slate-500">权益余额</span><span id="stat-equity-balance" class="font-semibold text-slate-900">¥0.00</span></div>
+          <div class="w-px h-4 bg-slate-200"></div>
+          <div class="flex items-center gap-1.5 text-xs"><span class="text-slate-500">实付金额</span><span id="stat-paid-amount" class="font-semibold text-slate-900">¥0.00</span></div>
+          <div class="w-px h-4 bg-slate-200"></div>
+          <div class="flex items-center gap-1.5 text-xs"><span class="text-slate-500">退款金额</span><span id="stat-refund-amount" class="font-semibold text-rose-500">¥0.00</span></div>
+        </div>
+        <!-- Pagination -->
+        <div class="flex items-center justify-between px-5 py-4 border-t border-slate-100">
+          <div class="flex items-center gap-1">
+            <button class="px-3 py-1.5 text-xs text-slate-600 bg-white border border-slate-200 rounded hover:border-brand-500 hover:text-brand-600 transition-colors">首页</button>
+            <button class="px-3 py-1.5 text-xs text-slate-600 bg-white border border-slate-200 rounded hover:border-brand-500 hover:text-brand-600 transition-colors">上一页</button>
+            <button class="px-3 py-1.5 text-xs text-slate-600 bg-white border border-slate-200 rounded hover:border-brand-500 hover:text-brand-600 transition-colors">下一页</button>
+            <button class="px-3 py-1.5 text-xs text-slate-600 bg-white border border-slate-200 rounded hover:border-brand-500 hover:text-brand-600 transition-colors">尾页</button>
+          </div>
+          <span class="text-xs text-slate-500">共100条数据</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 操作备注弹窗 -->
+  <div id="op-note-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden transform scale-95 transition-transform duration-200">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+          <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          开发备注
+        </h3>
+        <button id="close-op-note" type="button" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="px-6 py-6 text-center">
+        <p class="text-sm text-slate-700">待支付、待核账状态的订单，可以直接取消订单</p>
+      </div>
+      <div class="flex items-center justify-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+        <button id="confirm-op-note" type="button" class="px-6 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-all active:scale-95">我知道了</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 取消订单 Modal -->
+  <div id="cancel-order-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-200">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden transform scale-95 transition-transform duration-200">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-900">取消订单</h3>
+        <button id="close-cancel-modal" type="button" class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <div class="px-6 py-8 text-center">
+        <p class="text-base font-medium text-slate-800">是否取消的订单？</p>
+      </div>
+      <div class="flex items-center justify-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+        <button id="cancel-cancel" type="button" class="px-6 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-all active:scale-95">取消</button>
+        <button id="confirm-cancel" type="button" class="px-6 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-all active:scale-95">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const cancelModal = document.getElementById('cancel-order-modal');
+    const closeCancelModal = document.getElementById('close-cancel-modal');
+    const cancelCancelBtn = document.getElementById('cancel-cancel');
+    const confirmCancelBtn = document.getElementById('confirm-cancel');
+    const cancelOrderBtns = document.querySelectorAll('.cancel-order-btn');
+
+    function showCancelModal() {
+      cancelModal.classList.remove('opacity-0', 'pointer-events-none');
+      cancelModal.querySelector('div').classList.remove('scale-95');
+      cancelModal.querySelector('div').classList.add('scale-100');
+    }
+
+    function hideCancelModal() {
+      cancelModal.classList.add('opacity-0', 'pointer-events-none');
+      cancelModal.querySelector('div').classList.remove('scale-100');
+      cancelModal.querySelector('div').classList.add('scale-95');
+    }
+
+    cancelOrderBtns.forEach(btn => {
+      btn.addEventListener('click', showCancelModal);
+    });
+
+    closeCancelModal.addEventListener('click', hideCancelModal);
+    cancelCancelBtn.addEventListener('click', hideCancelModal);
+    confirmCancelBtn.addEventListener('click', () => {
+      alert('订单已取消');
+      hideCancelModal();
+    });
+    cancelModal.addEventListener('click', (e) => {
+      if (e.target === cancelModal) hideCancelModal();
+    });
+
+    // 金额统计
+    function calcStats() {
+      const rows = document.querySelectorAll('table tbody tr');
+      let totalQuota = 0, rechargeBalance = 0, equityBalance = 0, paidAmount = 0, refundAmount = 0;
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 7) {
+          totalQuota += parseFloat(cells[2].textContent) || 0;
+          rechargeBalance += parseFloat(cells[3].textContent) || 0;
+          equityBalance += parseFloat(cells[4].textContent) || 0;
+          paidAmount += parseFloat(cells[5].textContent) || 0;
+          refundAmount += parseFloat(cells[6].textContent) || 0;
+        }
+      });
+      document.getElementById('stat-total-quota').textContent = '¥' + totalQuota.toFixed(2);
+      document.getElementById('stat-recharge-balance').textContent = '¥' + rechargeBalance.toFixed(2);
+      document.getElementById('stat-equity-balance').textContent = '¥' + equityBalance.toFixed(2);
+      document.getElementById('stat-paid-amount').textContent = '¥' + paidAmount.toFixed(2);
+      document.getElementById('stat-refund-amount').textContent = '¥' + refundAmount.toFixed(2);
+    }
+    calcStats();
+
+    const opNoteModal = document.getElementById('op-note-modal');
+    const openOpNote = document.getElementById('open-op-note');
+    const closeOpNote = document.getElementById('close-op-note');
+    const confirmOpNote = document.getElementById('confirm-op-note');
+
+    openOpNote.addEventListener('click', () => opNoteModal.classList.remove('opacity-0', 'pointer-events-none'));
+    closeOpNote.addEventListener('click', () => opNoteModal.classList.add('opacity-0', 'pointer-events-none'));
+    confirmOpNote.addEventListener('click', () => opNoteModal.classList.add('opacity-0', 'pointer-events-none'));
+    opNoteModal.addEventListener('click', (e) => { if (e.target === opNoteModal) opNoteModal.classList.add('opacity-0', 'pointer-events-none'); });
+  </script>
+</body>
+</html>
