@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>云境链 - 企业认证</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans SC"', 'PingFang SC', 'Microsoft YaHei', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              200: '#a5f3fc',
+              300: '#67e8f9',
+              400: '#22d3ee',
+              500: '#06b6d4',
+              600: '#0891b2',
+              700: '#0e7490',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .step-active { background-color: #06b6d4; color: #fff; border-color: #06b6d4; }
+    .step-done { background-color: #e2e8f0; color: #64748b; border-color: #e2e8f0; }
+    .step-line-active { background-color: #06b6d4; }
+    .upload-box {
+      border: 1px dashed #cbd5e1;
+      transition: all 0.2s;
+    }
+    .upload-box:hover {
+      border-color: #06b6d4;
+      background-color: #f8fafc;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden">
+
+  <!-- Top Navbar -->
+  <header class="h-16 bg-white/90 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-20">
+    <div class="flex items-center gap-10">
+      <a href="index.html" class="flex items-center gap-2.5 group">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-shadow">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <span class="text-lg font-bold tracking-tight text-slate-900">云境链</span>
+      </a>
+      <span class="px-2 py-0.5 text-xs font-medium text-brand-700 bg-brand-50 border border-brand-200 rounded">自用模式</span>
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">首页</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-brand-600 bg-brand-50 rounded-lg transition-colors">控制台</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">模型广场</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">文档</a>
+        <a href="#" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-lg transition-colors">关于</a>
+      </nav>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="relative p-2 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+      </button>
+      <button class="relative p-2 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+        <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+      </button>
+      <button class="p-2 text-slate-500 hover:text-brand-600 hover:bg-brand-50 rounded-full transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+      </button>
+      <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-300 to-orange-400 flex items-center justify-center text-white text-xs font-bold shadow-sm">X</div>
+        <span class="text-sm font-medium text-slate-700">xiaomao</span>
+        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Global Sidebar -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col overflow-y-auto shrink-0">
+      <div class="p-4 space-y-6">
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">聊天</div>
+          <nav class="mt-1 space-y-1">
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              操练场
+            </a>
+
+          </nav>
+        </div>
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">控制台</div>
+          <nav class="mt-1 space-y-1">
+            <a href="index.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+              数据看板
+            </a>
+            <a href="token-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+              令牌管理
+            </a>
+            <a href="usage-logs.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+              使用日志
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              绘图日志
+            </a>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              任务日志
+            </a>
+          </nav>
+        </div>
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">企业管理</div>
+          <nav class="mt-1 space-y-1">
+            <a href="enterprise-verification.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-brand-700 bg-brand-50 rounded-lg border-l-4 border-brand-500 transition-colors">
+              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              企业认证
+            </a>
+            <a href="employee-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+              企业员工管理
+            </a>
+            <a href="model-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+              模型管理
+            </a>
+          </nav>
+        </div>
+        <div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">财务管理</div>
+          <nav class="mt-1 space-y-1">
+            <a href="quota-recharge.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              额度充值
+            </a>
+            <a href="recharge-bills.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
+              充值账单
+            </a>
+            <a href="invoice-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              发票管理
+            </a>
+          </nav>
+        </div>
+      </div>
+      <div class="mt-auto p-4 border-t border-slate-100">
+        <button class="flex items-center gap-2 text-sm text-slate-500 hover:text-brand-600 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"></path></svg>
+          收起侧边栏
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-auto p-6 bg-slate-50">
+
+      <!-- Step 1: 身份认证首页 -->
+      <div id="step-home" class="max-w-2xl mx-auto">
+        <div class="text-center mb-10">
+          <h1 class="text-2xl font-bold text-slate-900 mb-2">身份认证</h1>
+          <p class="text-sm text-slate-500">请选择您的认证类型</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-6 relative max-w-sm mx-auto">
+          <div class="absolute top-3 right-3">
+            <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+          </div>
+          <h3 class="text-base font-bold text-slate-900 mb-2">企业认证</h3>
+          <p class="text-sm text-slate-500 mb-4 leading-relaxed">适用于企业、个体工商户、事业单位、学校等，账户归属于企业</p>
+          <button onclick="showStep('step-method')" class="text-sm font-medium text-emerald-600 hover:text-emerald-700 flex items-center gap-1 transition-colors">
+            立即认证
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: 认证方式选择 -->
+      <div id="step-method" class="max-w-3xl mx-auto hidden">
+        <div class="flex items-center gap-3 mb-8">
+          <button onclick="showStep('step-home')" class="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+            返回
+          </button>
+          <h1 class="text-xl font-bold text-slate-900">企业认证</h1>
+        </div>
+        <h3 class="text-sm font-semibold text-slate-700 mb-4">认证方式</h3>
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <h4 class="text-base font-bold text-slate-900 mb-3">法定代表人人脸识别认证</h4>
+              <ol class="text-sm text-slate-500 space-y-2 list-decimal list-inside">
+                <li>填写企业或组织名称与统一社会信用代码，法定代表人姓名与身份证号码。</li>
+                <li>法定代表人本人使用支付宝App进行人脸识别。</li>
+                <li>完成认证。</li>
+              </ol>
+            </div>
+            <button onclick="showStep('step-form')" class="mt-1 text-slate-400 hover:text-slate-600 transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: 填写认证信息 -->
+      <div id="step-form" class="max-w-5xl mx-auto hidden">
+        <div class="flex items-center gap-3 mb-6">
+          <button onclick="showStep('step-method')" class="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+            返回
+          </button>
+          <h1 class="text-xl font-bold text-slate-900">法定代表人人脸识别认证</h1>
+        </div>
+
+        <!-- Step Indicator -->
+        <div class="flex items-center justify-between mb-8 px-4">
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center text-sm font-bold mb-2">1</div>
+            <span class="text-xs text-slate-700 font-medium">填写认证信息</span>
+          </div>
+          <div class="flex-1 h-0.5 bg-slate-200 mx-2 relative">
+            <div class="absolute left-0 top-0 h-full w-0 bg-brand-500" id="line-1"></div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold mb-2" id="step-num-2">2</div>
+            <span class="text-xs text-slate-500" id="step-text-2">人脸识别</span>
+          </div>
+          <div class="flex-1 h-0.5 bg-slate-200 mx-2 relative">
+            <div class="absolute left-0 top-0 h-full w-0 bg-brand-500" id="line-2"></div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold mb-2" id="step-num-3">3</div>
+            <span class="text-xs text-slate-500" id="step-text-3">完成认证</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-8">
+          <!-- 证件图片 -->
+          <h3 class="text-sm font-bold text-slate-900 mb-4">证件图片</h3>
+          <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="upload-box rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer text-center relative">
+              <div class="absolute top-2 right-2">
+                <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+              </div>
+              <svg class="w-8 h-8 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <span class="text-sm font-medium text-slate-700">营业执照</span>
+              <span class="text-xs text-slate-400 mt-1">请上传营业执照照片</span>
+            </div>
+            <div class="upload-box rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer text-center relative">
+              <div class="absolute top-2 right-2">
+                <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+              </div>
+              <svg class="w-8 h-8 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              <span class="text-sm font-medium text-slate-700">法人身份证正面</span>
+              <span class="text-xs text-slate-400 mt-1">请上传法人身份证正面照片</span>
+            </div>
+            <div class="upload-box rounded-lg p-6 flex flex-col items-center justify-center cursor-pointer text-center relative">
+              <div class="absolute top-2 right-2">
+                <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+              </div>
+              <svg class="w-8 h-8 text-slate-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              <span class="text-sm font-medium text-slate-700">法人身份证反面</span>
+              <span class="text-xs text-slate-400 mt-1">请上传法人身份证反面照片</span>
+            </div>
+          </div>
+
+          <!-- 企业认证信息 -->
+          <h3 class="text-sm font-bold text-slate-900 mb-4">企业认证信息</h3>
+          <div class="grid grid-cols-2 gap-6 mb-6">
+            <div>
+              <label class="block text-sm text-slate-700 mb-1.5">
+                企业名称
+                <span class="text-xs text-slate-400 ml-1">（企业名称以认证的名称为准）</span>
+              </label>
+              <div class="relative">
+                <input type="text" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all" placeholder="">
+                <div class="absolute right-2 top-1/2 -translate-y-1/2">
+                  <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm text-slate-700 mb-1.5">统一社会信用代码</label>
+              <div class="relative">
+                <input type="text" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all" placeholder="">
+                <div class="absolute right-2 top-1/2 -translate-y-1/2">
+                  <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm text-slate-700 mb-1.5">法定代表人姓名</label>
+              <div class="relative">
+                <input type="text" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all" placeholder="">
+                <div class="absolute right-2 top-1/2 -translate-y-1/2">
+                  <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="block text-sm text-slate-700 mb-1.5">法定代表人身份证</label>
+              <div class="relative">
+                <input type="text" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all" placeholder="">
+                <div class="absolute right-2 top-1/2 -translate-y-1/2">
+                  <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                </div>
+              </div>
+            </div>
+            <div class="col-span-2">
+              <label class="block text-sm text-slate-700 mb-1.5">企业地址</label>
+              <div class="relative max-w-md">
+                <input type="text" class="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all" placeholder="">
+                <div class="absolute right-2 top-1/2 -translate-y-1/2">
+                  <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-xs text-slate-400 mb-6 leading-relaxed">
+            您理解并同意平台有权自行或委托第三方，审查您在实名认证时提供的信息是否真实、准确及有效。若提供虚假信息，由此带来的后果全部由您承担。
+          </p>
+
+          <div class="flex items-center gap-3">
+            <button onclick="showStep('step-method')" class="px-5 py-2 text-sm font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">上一步</button>
+            <button onclick="goToFace()" class="px-5 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-colors">下一步</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: 人脸识别 -->
+      <div id="step-face" class="max-w-5xl mx-auto hidden">
+        <div class="flex items-center gap-3 mb-6">
+          <button onclick="showStep('step-form')" class="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+            返回
+          </button>
+          <h1 class="text-xl font-bold text-slate-900">法定代表人人脸识别认证</h1>
+        </div>
+
+        <!-- Step Indicator -->
+        <div class="flex items-center justify-between mb-8 px-4">
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center text-sm font-bold mb-2">1</div>
+            <span class="text-xs text-slate-700 font-medium">填写认证信息</span>
+          </div>
+          <div class="flex-1 h-0.5 bg-brand-500 mx-2"></div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-8 h-8 rounded-full bg-brand-500 text-white flex items-center justify-center text-sm font-bold mb-2">2</div>
+            <span class="text-xs text-slate-700 font-medium">人脸识别</span>
+          </div>
+          <div class="flex-1 h-0.5 bg-slate-200 mx-2"></div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="w-8 h-8 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-sm font-bold mb-2">3</div>
+            <span class="text-xs text-slate-500">完成认证</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-10 flex flex-col items-center relative">
+          <div class="absolute top-4 right-4">
+            <svg class="w-5 h-5 text-amber-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+          </div>
+          <div class="w-48 h-48 bg-slate-100 rounded-lg flex items-center justify-center mb-6">
+            <svg class="w-32 h-32 text-slate-300" viewBox="0 0 100 100" fill="currentColor">
+              <rect x="10" y="10" width="20" height="20"/>
+              <rect x="70" y="10" width="20" height="20"/>
+              <rect x="10" y="70" width="20" height="20"/>
+              <rect x="70" y="70" width="20" height="20"/>
+              <rect x="35" y="35" width="5" height="5"/><rect x="45" y="35" width="5" height="5"/><rect x="55" y="35" width="5" height="5"/>
+              <rect x="35" y="45" width="5" height="5"/><rect x="50" y="45" width="5" height="5"/><rect x="60" y="45" width="5" height="5"/>
+              <rect x="40" y="55" width="5" height="5"/><rect x="50" y="55" width="5" height="5"/>
+            </svg>
+          </div>
+          <p class="text-sm text-slate-500 mb-6">请使用支付宝App扫描二维码，完成法定代表人身份验证</p>
+          <button onclick="showStep('step-success')" class="px-6 py-2 text-sm font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-full transition-colors">已完成人脸识别</button>
+        </div>
+      </div>
+
+      <!-- Step 5: 认证成功 -->
+      <div id="step-success" class="max-w-2xl mx-auto hidden">
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-10 flex flex-col items-center text-center">
+          <div class="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mb-4">
+            <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900 mb-2">认证成功</h2>
+          <p class="text-sm text-slate-500 mb-6">您的认证已完成，账户权限已更新</p>
+          <button onclick="showStep('step-record')" class="px-6 py-2 text-sm font-medium text-white bg-emerald-500 hover:bg-emerald-600 rounded-full transition-colors">返回认证首页</button>
+        </div>
+      </div>
+
+      <!-- Step 6: 企业认证记录 -->
+      <div id="step-record" class="max-w-4xl mx-auto hidden">
+        <div class="flex items-center gap-3 mb-6">
+          <button onclick="showStep('step-home')" class="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+            返回
+          </button>
+          <h1 class="text-xl font-bold text-slate-900">企业认证记录</h1>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-6">
+          <div class="grid grid-cols-3 gap-y-4 gap-x-8 text-sm">
+            <div>
+              <div class="text-slate-500 mb-1">企业名称：</div>
+              <div class="font-medium text-slate-900">北京科技有限公司</div>
+            </div>
+            <div>
+              <div class="text-slate-500 mb-1">统一社会信用代码：</div>
+              <div class="font-medium text-slate-900">91110101XXXXXXXXXX</div>
+            </div>
+            <div>
+              <div class="text-slate-500 mb-1">法定代表人：</div>
+              <div class="font-medium text-slate-900">张**</div>
+            </div>
+            <div>
+              <div class="text-slate-500 mb-1">法定代表人身份证：</div>
+              <div class="font-medium text-slate-900">110101********1234</div>
+            </div>
+            <div>
+              <div class="text-slate-500 mb-1">企业地址：</div>
+              <div class="font-medium text-slate-900">北京市朝阳区XX街道XX号</div>
+            </div>
+            <div>
+              <div class="text-slate-500 mb-1">企业认证状态：</div>
+              <div class="font-medium text-emerald-600 flex items-center gap-1">
+                已认证
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path></svg>
+              </div>
+            </div>
+            <div>
+              <div class="text-slate-500 mb-1">企业认证时间：</div>
+              <div class="font-medium text-slate-900">2026-05-30 10:30:00</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    function showStep(stepId) {
+      document.querySelectorAll('main > div').forEach(div => div.classList.add('hidden'));
+      document.getElementById(stepId).classList.remove('hidden');
+    }
+
+    function goToFace() {
+      document.getElementById('line-1').classList.remove('w-0');
+      document.getElementById('line-1').classList.add('w-full');
+      document.getElementById('step-num-2').classList.remove('bg-slate-200', 'text-slate-500');
+      document.getElementById('step-num-2').classList.add('bg-brand-500', 'text-white');
+      document.getElementById('step-text-2').classList.remove('text-slate-500');
+      document.getElementById('step-text-2').classList.add('text-slate-700', 'font-medium');
+      setTimeout(() => showStep('step-face'), 200);
+    }
+  </script>
+</body>
+</html>
