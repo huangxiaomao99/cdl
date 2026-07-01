@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>超级API平台 - 企业员工管理</title>
+  <title>超级API平台 - 数据看板</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
   <script>
     tailwind.config = {
       theme: {
@@ -36,17 +37,8 @@
     /* Custom scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-    /* Toggle switch */
-    .toggle-checkbox:checked {
-      right: 0;
-      border-color: #06b6d4;
-    }
-    .toggle-checkbox:checked + .toggle-label {
-      background-color: #06b6d4;
-    }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
 
     /* Subtle page load animation */
     @keyframes fadeUp {
@@ -60,9 +52,15 @@
     .delay-200 { animation-delay: 0.16s; }
     .delay-300 { animation-delay: 0.24s; }
 
-    /* Table row hover glow */
-    .table-row-hover:hover {
-      box-shadow: inset 0 0 0 1px #cffafe;
+    /* Dashboard card (light theme) */
+    .dashboard-card {
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+    .dashboard-card:hover {
+      border-color: rgba(203, 213, 225, 1);
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
     }
   </style>
 </head>
@@ -72,7 +70,7 @@
   <header class="h-16 bg-white/90 backdrop-blur border-b border-slate-200 flex items-center justify-between px-6 shrink-0 z-20">
     <div class="flex items-center gap-10">
       <a href="#" class="flex items-center gap-2.5 group">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-white shadow-md group-hover:shadow-lg transition-shadow">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center text-slate-900 shadow-md group-hover:shadow-lg transition-shadow">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
           </svg>
@@ -100,9 +98,9 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
       </button>
       <div class="flex items-center gap-2 pl-3 border-l border-slate-200">
-        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-300 to-orange-400 flex items-center justify-center text-white text-xs font-bold shadow-sm">X</div>
+        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-300 to-orange-400 flex items-center justify-center text-slate-900 text-xs font-bold shadow-sm">X</div>
         <span class="text-sm font-medium text-slate-700">xiaomao</span>
-        <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+        <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
       </div>
     </div>
   </header>
@@ -113,79 +111,79 @@
       <div class="p-4 space-y-6">
         <!-- 聊天 -->
         <div>
-          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">聊天</div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">聊天</div>
           <nav class="mt-1 space-y-1">
             <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
               操练场
             </a>
             <a href="#" class="flex items-center justify-between px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors group">
               <div class="flex items-center gap-3">
-                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                 聊天
               </div>
-              <svg class="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
+              <svg class="w-4 h-4 text-slate-500 group-hover:text-slate-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
             </a>
           </nav>
         </div>
         <!-- 控制台 -->
         <div>
-          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">控制台</div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">控制台</div>
           <nav class="mt-1 space-y-1">
-            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-brand-700 bg-brand-50 rounded-lg border-l-4 border-brand-500 transition-colors">
+              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
               数据看板
             </a>
             <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
               令牌管理
             </a>
             <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
               使用日志
             </a>
             <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
               绘图日志
             </a>
             <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
               任务日志
             </a>
           </nav>
         </div>
         <!-- 企业管理 -->
         <div>
-          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">企业管理</div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">企业管理</div>
           <nav class="mt-1 space-y-1">
             <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
               企业认证
             </a>
-            <a href="#" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-brand-700 bg-brand-50 rounded-lg border-l-4 border-brand-500 transition-colors">
-              <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <a href="employee-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
               企业员工管理
             </a>
             <a href="model-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
               模型管理
             </a>
           </nav>
         </div>
         <!-- 财务管理 -->
         <div>
-          <div class="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">财务管理</div>
+          <div class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">财务管理</div>
           <nav class="mt-1 space-y-1">
             <a href="quota-recharge.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
               额度充值
             </a>
             <a href="recharge-bills.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg>
               充值账单
             </a>
             <a href="invoice-management.html" class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-slate-600 rounded-lg hover:bg-slate-50 hover:text-slate-900 transition-colors">
-              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
               发票管理
             </a>
           </nav>
@@ -199,789 +197,356 @@
       </div>
     </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 overflow-hidden flex bg-slate-50">
-      <!-- Team Tree Panel -->
-      <aside class="w-64 bg-white border-r border-slate-200 flex flex-col overflow-y-auto shrink-0 animate-fade-up">
-        <div class="p-4 border-b border-slate-100">
-          <h2 class="text-base font-bold text-slate-900">团队管理</h2>
+    <!-- Main Content: 数据看板 -->
+    <main class="flex-1 overflow-auto bg-slate-50 text-slate-800 p-6">
+      <!-- 顶部标题栏 -->
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-6 animate-fade-up">
+        <div>
+          <h1 class="text-xl font-bold text-slate-900 tracking-wide">数据看板</h1>
         </div>
-        <div class="p-3">
-          <div class="space-y-1">
-            <!-- Company level -->
-            <div class="tree-item group relative flex items-center justify-between px-2 py-1.5 text-sm font-semibold text-slate-800 hover:bg-slate-50 rounded-md transition-colors">
-              <div class="flex items-center gap-2">
-                <svg class="w-4 h-4 text-slate-400 transform rotate-90" fill="currentColor" viewBox="0 0 20 20"><path d="M6 6L14 10L6 14V6Z"></path></svg>
-                <span>广东冲电狼科技有限公司</span>
-              </div>
-              <button class="more-btn p-1 rounded text-slate-300 hover:text-slate-500 hover:bg-slate-200/50 opacity-0 group-hover:opacity-100 transition-all">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-              </button>
-              <div class="tree-dropdown hidden absolute right-0 top-full mt-1 w-28 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-30 animate-fade-up">
-                <a href="#" data-open-modal="modal-add-member" data-dept="广东冲电狼科技有限公司" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">新增成员</a>
-                <a href="#" data-open-modal="modal-create-dept" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">创建部门</a>
-              </div>
-            </div>
-            <!-- Departments -->
-            <div class="ml-5 pl-2 border-l border-slate-200 space-y-1">
-              <div class="tree-item group relative flex items-center justify-between px-2 py-1.5 text-sm text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-md transition-colors">
-                <span>运营部</span>
-                <button class="more-btn p-1 rounded text-slate-300 hover:text-slate-500 hover:bg-slate-200/30 opacity-0 group-hover:opacity-100 transition-all">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-                </button>
-                <div class="tree-dropdown hidden absolute right-0 top-full mt-1 w-28 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-30 animate-fade-up">
-                  <a href="#" data-open-modal="modal-add-member" data-dept="运营部" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">新增成员</a>
-                  <a href="#" data-open-modal="modal-create-dept" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">创建部门</a>
-                  <a href="#" data-open-modal="modal-edit-dept" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">修改部门</a>
-                  <a href="#" data-open-modal="modal-delete-dept" class="open-modal-link block px-3 py-1.5 text-sm text-rose-600 hover:bg-rose-50">删除部门</a>
-                </div>
-              </div>
-              <div class="tree-item group relative flex items-center justify-between px-2 py-1.5 text-sm text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-md transition-colors">
-                <span>技术部</span>
-                <button class="more-btn p-1 rounded text-slate-300 hover:text-slate-500 hover:bg-slate-200/30 opacity-0 group-hover:opacity-100 transition-all">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-                </button>
-                <div class="tree-dropdown hidden absolute right-0 top-full mt-1 w-28 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-30 animate-fade-up">
-                  <a href="#" data-open-modal="modal-add-member" data-dept="技术部" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">新增成员</a>
-                  <a href="#" data-open-modal="modal-create-dept" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">创建部门</a>
-                  <a href="#" data-open-modal="modal-edit-dept" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">修改部门</a>
-                  <a href="#" data-open-modal="modal-delete-dept" class="open-modal-link block px-3 py-1.5 text-sm text-rose-600 hover:bg-rose-50">删除部门</a>
-                </div>
-              </div>
-              <div class="tree-item group relative flex items-center justify-between px-2 py-1.5 text-sm text-slate-600 hover:text-brand-600 hover:bg-brand-50 rounded-md transition-colors">
-                <span>产品部</span>
-                <button class="more-btn p-1 rounded text-slate-300 hover:text-slate-500 hover:bg-slate-200/30 opacity-0 group-hover:opacity-100 transition-all">
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z"></path></svg>
-                </button>
-                <div class="tree-dropdown hidden absolute right-0 top-full mt-1 w-28 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-30 animate-fade-up">
-                  <a href="#" data-open-modal="modal-add-member" data-dept="产品部" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">新增成员</a>
-                  <a href="#" data-open-modal="modal-create-dept" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">创建部门</a>
-                  <a href="#" data-open-modal="modal-edit-dept" class="open-modal-link block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">修改部门</a>
-                  <a href="#" data-open-modal="modal-delete-dept" class="open-modal-link block px-3 py-1.5 text-sm text-rose-600 hover:bg-rose-50">删除部门</a>
-                </div>
-              </div>
-            </div>
+        <div class="flex items-center flex-wrap gap-3">
+          <!-- 时间快捷筛选 -->
+          <div class="inline-flex bg-white border border-slate-200 rounded-lg p-1 shadow-sm">
+            <button class="time-filter-btn px-3 py-1.5 text-xs font-medium rounded-md bg-brand-500 text-white transition-colors" data-range="today">今日</button>
+            <button class="time-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-600 hover:bg-slate-50 transition-colors" data-range="week">本周</button>
+            <button class="time-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-600 hover:bg-slate-50 transition-colors" data-range="month">本月</button>
+            <button class="time-filter-btn px-3 py-1.5 text-xs font-medium rounded-md text-slate-600 hover:bg-slate-50 transition-colors" data-range="custom">自定义</button>
+          </div>
+          <!-- 自定义日期范围 -->
+          <div id="custom-date-range" class="hidden items-center gap-2">
+            <input type="date" id="start-date" class="px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-700" />
+            <span class="text-xs text-slate-400">至</span>
+            <input type="date" id="end-date" class="px-2.5 py-1.5 text-xs bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-700" />
+            <button id="query-btn" class="px-3 py-1.5 text-xs font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-colors">查询</button>
           </div>
         </div>
-      </aside>
+      </div>
 
-      <!-- Content Panel -->
-      <section class="flex-1 overflow-auto p-6">
-        <!-- Company Info Card -->
-        <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-6 mb-5 animate-fade-up">
-          <h1 class="text-2xl font-bold text-slate-900 mb-2">广东冲电狼科技有限公司</h1>
-          <div class="flex items-center gap-2 text-slate-600">
-            <span class="text-sm">团队成员：</span>
-            <span class="text-xl font-semibold text-brand-600">358</span>
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 mb-5">
+        <!-- 充值额度消耗 -->
+        <div class="dashboard-card rounded-xl p-5 animate-fade-up">
+          <div class="text-sm text-slate-500 mb-2">充值额度消耗</div>
+          <div class="text-2xl font-bold text-slate-900 mb-2">¥9.72</div>
+          <div class="flex items-center gap-1 text-xs">
+            <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+            <span class="text-emerald-400 font-medium">10.3%</span>
+            <span class="text-slate-500">较昨日</span>
           </div>
         </div>
-
-        <!-- Tabs -->
-        <div class="mb-4 animate-fade-up delay-100">
-          <div class="flex items-center gap-6 border-b border-slate-200">
-            <button data-tab="members" class="tab-btn pb-3 text-sm font-semibold text-brand-600 border-b-2 border-brand-500 transition-colors">
-              成员列表
-            </button>
-            <button data-tab="invites" class="tab-btn pb-3 text-sm font-medium text-slate-500 hover:text-slate-700 border-b-2 border-transparent transition-colors">
-              邀请管理
-            </button>
+        <!-- 权益额度消耗 -->
+        <div class="dashboard-card rounded-xl p-5 animate-fade-up delay-100">
+          <div class="text-sm text-slate-500 mb-2">权益额度消耗</div>
+          <div class="text-2xl font-bold text-slate-900 mb-2">¥5.12</div>
+          <div class="flex items-center gap-1 text-xs">
+            <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+            <span class="text-emerald-400 font-medium">18.6%</span>
+            <span class="text-slate-500">较昨日</span>
           </div>
         </div>
-
-        <!-- Members Tab Content -->
-        <div id="members-panel" class="tab-panel animate-fade-up delay-200">
-          <!-- Filter Bar -->
-          <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4 mb-4">
-            <div class="flex flex-wrap items-center gap-3">
-              <div class="relative">
-                <input type="text" placeholder="请输入ID/手机号码" class="w-44 pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all" />
-                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-              </div>
-              <input type="text" placeholder="请输入成员名称/用户名" class="w-48 px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all" />
-              <div class="relative">
-                <select class="w-40 appearance-none px-3 py-2 pr-8 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-600">
-                  <option>请选择账号状态</option>
-                  <option>启用</option>
-                  <option>停用</option>
-                </select>
-                <svg class="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-              </div>
-              <div class="relative">
-                <select class="w-40 appearance-none px-3 py-2 pr-8 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-600">
-                  <option>包含子部门成员</option>
-                  <option>仅当前部门</option>
-                </select>
-                <svg class="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-              </div>
-              <div class="relative">
-                <input type="date" class="w-40 px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-600" />
-              </div>
-              <div class="flex items-center gap-2 ml-auto">
-                <button class="px-4 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm shadow-brand-500/20 transition-all active:scale-95">搜索</button>
-                <button class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors active:scale-95">重置</button>
-                <button class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors active:scale-95">导出</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Add Member Button -->
-          <div class="flex justify-end mb-3">
-            <button data-open-modal="modal-add-member" class="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm shadow-brand-500/20 transition-all active:scale-95">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
-              新增成员
-            </button>
-          </div>
-
-          <!-- Data Table -->
-          <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-sm text-left">
-                <thead class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
-                  <tr>
-                    <th class="px-4 py-3.5 w-16 text-center">ID</th>
-                    <th class="px-4 py-3.5">员工名称</th>
-                    <th class="px-4 py-3.5">用户名</th>
-                    <th class="px-4 py-3.5">手机号码</th>
-                    <th class="px-4 py-3.5">部门</th>
-                    <th class="px-4 py-3.5">角色</th>
-                    <th class="px-4 py-3.5">已用/总额度</th>
-                    <th class="px-4 py-3.5">创建时间</th>
-                    <th class="px-4 py-3.5 text-center">账号状态</th>
-                    <th class="px-4 py-3.5 text-center">操作</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                  <tr class="table-row-hover transition-colors hover:bg-slate-50/70 group">
-                    <td class="px-4 py-4 text-center text-slate-500">1001</td>
-                    <td class="px-4 py-4 font-medium text-slate-900">陈晓明</td>
-                    <td class="px-4 py-4 text-slate-600">chenxm</td>
-                    <td class="px-4 py-4 text-slate-600">138****8888</td>
-                    <td class="px-4 py-4 text-slate-600">运营部</td>
-                    <td class="px-4 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-brand-50 text-brand-700">企业管理员</span></td>
-                    <td class="px-4 py-4 text-slate-600 font-mono">0/5000.00</td>
-                    <td class="px-4 py-4 text-slate-500">2026-4-3 18:22:30</td>
-                    <td class="px-4 py-4 text-center">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                      </label>
-                    </td>
-                    <td class="px-4 py-4 text-center relative">
-                      <button class="action-btn inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 transition-colors">
-                        操作
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                      </button>
-                      <div class="action-dropdown hidden absolute right-4 top-full mt-1 w-28 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-10 animate-fade-up">
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">详情</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">编辑成员</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">重置密码</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-rose-600 hover:bg-rose-50">移除成员</a>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="table-row-hover transition-colors hover:bg-slate-50/70">
-                    <td class="px-4 py-4 text-center text-slate-500">1002</td>
-                    <td class="px-4 py-4 font-medium text-slate-900">李晓红</td>
-                    <td class="px-4 py-4 text-slate-600">lixh</td>
-                    <td class="px-4 py-4 text-slate-600">139****6666</td>
-                    <td class="px-4 py-4 text-slate-600">技术部</td>
-                    <td class="px-4 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">普通成员</span></td>
-                    <td class="px-4 py-4 text-slate-600 font-mono">0/无上限</td>
-                    <td class="px-4 py-4 text-slate-500">2026-4-3 18:22:30</td>
-                    <td class="px-4 py-4 text-center">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                      </label>
-                    </td>
-                    <td class="px-4 py-4 text-center relative">
-                      <button class="action-btn inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 transition-colors">
-                        操作
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                      </button>
-                      <div class="action-dropdown hidden absolute right-4 top-full mt-1 w-28 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-10 animate-fade-up">
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">详情</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">编辑成员</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">重置密码</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-rose-600 hover:bg-rose-50">移除成员</a>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="table-row-hover transition-colors hover:bg-slate-50/70">
-                    <td class="px-4 py-4 text-center text-slate-500">1003</td>
-                    <td class="px-4 py-4 font-medium text-slate-900">王伟</td>
-                    <td class="px-4 py-4 text-slate-600">wangw</td>
-                    <td class="px-4 py-4 text-slate-600">137****5555</td>
-                    <td class="px-4 py-4 text-slate-600">产品部</td>
-                    <td class="px-4 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">普通成员</span></td>
-                    <td class="px-4 py-4 text-slate-600 font-mono">0/无上限</td>
-                    <td class="px-4 py-4 text-slate-500">2026-4-3 18:22:30</td>
-                    <td class="px-4 py-4 text-center">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                      </label>
-                    </td>
-                    <td class="px-4 py-4 text-center relative">
-                      <button class="action-btn inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 transition-colors">
-                        操作
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                      </button>
-                      <div class="action-dropdown hidden absolute right-4 top-full mt-1 w-28 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-10 animate-fade-up">
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">详情</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">编辑成员</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">重置密码</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-rose-600 hover:bg-rose-50">移除成员</a>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="table-row-hover transition-colors hover:bg-slate-50/70">
-                    <td class="px-4 py-4 text-center text-slate-500">1004</td>
-                    <td class="px-4 py-4 font-medium text-slate-900">赵静</td>
-                    <td class="px-4 py-4 text-slate-600">zhaoj</td>
-                    <td class="px-4 py-4 text-slate-600">136****4444</td>
-                    <td class="px-4 py-4 text-slate-600">运营部</td>
-                    <td class="px-4 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">普通成员</span></td>
-                    <td class="px-4 py-4 text-slate-600 font-mono">0/无上限</td>
-                    <td class="px-4 py-4 text-slate-500">2026-4-3 18:22:30</td>
-                    <td class="px-4 py-4 text-center">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                      </label>
-                    </td>
-                    <td class="px-4 py-4 text-center relative">
-                      <button class="action-btn inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 transition-colors">
-                        操作
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                      </button>
-                      <div class="action-dropdown hidden absolute right-4 top-full mt-1 w-28 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-10 animate-fade-up">
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">详情</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">编辑成员</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">重置密码</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-rose-600 hover:bg-rose-50">移除成员</a>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="table-row-hover transition-colors hover:bg-slate-50/70">
-                    <td class="px-4 py-4 text-center text-slate-500">1005</td>
-                    <td class="px-4 py-4 font-medium text-slate-900">刘洋</td>
-                    <td class="px-4 py-4 text-slate-600">liuy</td>
-                    <td class="px-4 py-4 text-slate-600">135****3333</td>
-                    <td class="px-4 py-4 text-slate-600">技术部</td>
-                    <td class="px-4 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">普通成员</span></td>
-                    <td class="px-4 py-4 text-slate-600 font-mono">0/无上限</td>
-                    <td class="px-4 py-4 text-slate-500">2026-4-3 18:22:30</td>
-                    <td class="px-4 py-4 text-center">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                      </label>
-                    </td>
-                    <td class="px-4 py-4 text-center relative">
-                      <button class="action-btn inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 transition-colors">
-                        操作
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                      </button>
-                      <div class="action-dropdown hidden absolute right-4 top-full mt-1 w-28 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-10 animate-fade-up">
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">详情</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">编辑成员</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">重置密码</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-rose-600 hover:bg-rose-50">移除成员</a>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="table-row-hover transition-colors hover:bg-slate-50/70">
-                    <td class="px-4 py-4 text-center text-slate-500">1006</td>
-                    <td class="px-4 py-4 font-medium text-slate-900">孙丽</td>
-                    <td class="px-4 py-4 text-slate-600">sunl</td>
-                    <td class="px-4 py-4 text-slate-600">134****2222</td>
-                    <td class="px-4 py-4 text-slate-600">产品部</td>
-                    <td class="px-4 py-4"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">普通成员</span></td>
-                    <td class="px-4 py-4 text-slate-600 font-mono">0/无上限</td>
-                    <td class="px-4 py-4 text-slate-500">2026-4-3 18:22:30</td>
-                    <td class="px-4 py-4 text-center">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                      </label>
-                    </td>
-                    <td class="px-4 py-4 text-center relative">
-                      <button class="action-btn inline-flex items-center gap-1 text-sm text-slate-600 hover:text-brand-600 transition-colors">
-                        操作
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-                      </button>
-                      <div class="action-dropdown hidden absolute right-4 top-full mt-1 w-28 bg-white rounded-lg shadow-lg border border-slate-100 py-1 z-10 animate-fade-up">
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">详情</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">编辑成员</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-slate-600 hover:bg-brand-50 hover:text-brand-700">重置密码</a>
-                        <a href="#" class="block px-3 py-1.5 text-sm text-rose-600 hover:bg-rose-50">移除成员</a>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Pagination -->
-          <div class="flex items-center justify-between mt-4">
-            <div class="text-sm text-slate-500">共 <span class="font-medium text-slate-800">100</span> 条数据</div>
-            <div class="flex items-center gap-1">
-              <button class="px-3 py-1.5 text-sm text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 transition-colors">首页</button>
-              <button class="px-3 py-1.5 text-sm text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 transition-colors">上一页</button>
-              <button class="px-3 py-1.5 text-sm text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 transition-colors">下一页</button>
-              <button class="px-3 py-1.5 text-sm text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 transition-colors">尾页</button>
-            </div>
+        <!-- 请求总量 -->
+        <div class="dashboard-card rounded-xl p-5 animate-fade-up delay-200">
+          <div class="text-sm text-slate-500 mb-2">请求总量</div>
+          <div class="text-2xl font-bold text-slate-900 mb-2">1,345</div>
+          <div class="flex items-center gap-1 text-xs">
+            <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+            <span class="text-emerald-400 font-medium">8.2%</span>
+            <span class="text-slate-500">较昨日</span>
           </div>
         </div>
-
-        <!-- Invites Tab Content -->
-        <div id="invites-panel" class="tab-panel hidden animate-fade-up delay-200">
-          <!-- Filter Bar -->
-          <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm p-4 mb-4">
-            <div class="flex flex-wrap items-center gap-3">
-              <div class="relative">
-                <select class="w-40 appearance-none px-3 py-2 pr-8 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-600">
-                  <option>请选择链接状态</option>
-                  <option>有效</option>
-                  <option>过期</option>
-                </select>
-                <svg class="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-              </div>
-              <div class="relative">
-                <select class="w-44 appearance-none px-3 py-2 pr-8 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-600">
-                  <option>请选择启用/禁用状态</option>
-                  <option>启用</option>
-                  <option>禁用</option>
-                </select>
-                <svg class="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-              </div>
-              <div class="relative">
-                <select class="w-36 appearance-none px-3 py-2 pr-8 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-600">
-                  <option>包含子部门</option>
-                  <option>仅当前部门</option>
-                </select>
-                <svg class="w-4 h-4 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path></svg>
-              </div>
-              <div class="relative">
-                <input type="date" class="w-40 px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-600" />
-              </div>
-              <div class="flex items-center gap-2 ml-auto">
-                <button class="px-4 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm shadow-brand-500/20 transition-all active:scale-95">搜索</button>
-                <button class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors active:scale-95">重置</button>
-                <button class="px-4 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors active:scale-95">导出</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Create Invite Button -->
-          <div class="flex justify-end mb-3">
-            <button class="flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm shadow-brand-500/20 transition-all active:scale-95">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-              创建邀请链接
-            </button>
-          </div>
-
-          <!-- Data Table -->
-          <div class="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-sm text-left">
-                <thead class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
-                  <tr>
-                    <th class="px-4 py-3.5">部门</th>
-                    <th class="px-4 py-3.5">邀请码</th>
-                    <th class="px-4 py-3.5 text-center">使用次数</th>
-                    <th class="px-4 py-3.5">过期时间</th>
-                    <th class="px-4 py-3.5 text-center">链接状态</th>
-                    <th class="px-4 py-3.5">创建时间</th>
-                    <th class="px-4 py-3.5">创建人</th>
-                    <th class="px-4 py-3.5 text-center">启用/禁用</th>
-                    <th class="px-4 py-3.5 text-center">操作</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100">
-                  <tr class="table-row-hover transition-colors hover:bg-slate-50/70">
-                    <td class="px-4 py-4 text-slate-800">广东冲电狼科技有限公司</td>
-                    <td class="px-4 py-4 font-mono text-slate-600">DL260615A56952</td>
-                    <td class="px-4 py-4 text-center text-slate-700 font-medium">213</td>
-                    <td class="px-4 py-4 text-slate-600">永久</td>
-                    <td class="px-4 py-4 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">有效</span></td>
-                    <td class="px-4 py-4 text-slate-500">2026-4-3 18:22:30</td>
-                    <td class="px-4 py-4 text-slate-700">王茂</td>
-                    <td class="px-4 py-4 text-center">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                      </label>
-                    </td>
-                    <td class="px-4 py-4 text-center">
-                      <div class="flex items-center justify-center gap-2 text-xs">
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">复制链接</button>
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">查看二维码</button>
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">编辑</button>
-                        <button class="text-rose-600 hover:text-rose-700 hover:underline">删除</button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="table-row-hover transition-colors hover:bg-slate-50/70">
-                    <td class="px-4 py-4 text-slate-800 text-center">营业部</td>
-                    <td class="px-4 py-4 font-mono text-slate-600">DL260615A56145</td>
-                    <td class="px-4 py-4 text-center text-slate-700 font-medium">34</td>
-                    <td class="px-4 py-4 text-slate-600">2026-01-31 23:59:59</td>
-                    <td class="px-4 py-4 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-500">过期</span></td>
-                    <td class="px-4 py-4 text-slate-500">2026-4-3 18:22:30</td>
-                    <td class="px-4 py-4 text-slate-700">王茂</td>
-                    <td class="px-4 py-4 text-center">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                      </label>
-                    </td>
-                    <td class="px-4 py-4 text-center">
-                      <div class="flex items-center justify-center gap-2 text-xs">
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">复制链接</button>
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">查看二维码</button>
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">编辑</button>
-                        <button class="text-rose-600 hover:text-rose-700 hover:underline">删除</button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="table-row-hover transition-colors hover:bg-slate-50/70">
-                    <td class="px-4 py-4 text-slate-800 text-center">技术部</td>
-                    <td class="px-4 py-4 font-mono text-slate-600">DL260615A56485</td>
-                    <td class="px-4 py-4 text-center text-slate-700 font-medium">45</td>
-                    <td class="px-4 py-4 text-slate-600">永久</td>
-                    <td class="px-4 py-4 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">有效</span></td>
-                    <td class="px-4 py-4 text-slate-500">2026-4-3 18:22:30</td>
-                    <td class="px-4 py-4 text-slate-700">王茂</td>
-                    <td class="px-4 py-4 text-center">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                      </label>
-                    </td>
-                    <td class="px-4 py-4 text-center">
-                      <div class="flex items-center justify-center gap-2 text-xs">
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">复制链接</button>
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">查看二维码</button>
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">编辑</button>
-                        <button class="text-rose-600 hover:text-rose-700 hover:underline">删除</button>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr class="table-row-hover transition-colors hover:bg-slate-50/70">
-                    <td class="px-4 py-4 text-slate-800 text-center">产品部</td>
-                    <td class="px-4 py-4 font-mono text-slate-600">DL260615A56923</td>
-                    <td class="px-4 py-4 text-center text-slate-700 font-medium">76</td>
-                    <td class="px-4 py-4 text-slate-600">永久</td>
-                    <td class="px-4 py-4 text-center"><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700">有效</span></td>
-                    <td class="px-4 py-4 text-slate-500">2026-4-3 18:22:30</td>
-                    <td class="px-4 py-4 text-slate-700">王茂</td>
-                    <td class="px-4 py-4 text-center">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" checked class="sr-only peer">
-                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-brand-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-500"></div>
-                      </label>
-                    </td>
-                    <td class="px-4 py-4 text-center">
-                      <div class="flex items-center justify-center gap-2 text-xs">
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">复制链接</button>
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">查看二维码</button>
-                        <button class="text-brand-600 hover:text-brand-700 hover:underline">编辑</button>
-                        <button class="text-rose-600 hover:text-rose-700 hover:underline">删除</button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Pagination -->
-          <div class="flex items-center justify-between mt-4">
-            <div class="text-sm text-slate-500">共 <span class="font-medium text-slate-800">4</span> 条数据</div>
-            <div class="flex items-center gap-1">
-              <button class="px-3 py-1.5 text-sm text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 transition-colors">首页</button>
-              <button class="px-3 py-1.5 text-sm text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 transition-colors">上一页</button>
-              <button class="px-3 py-1.5 text-sm text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 transition-colors">下一页</button>
-              <button class="px-3 py-1.5 text-sm text-slate-600 bg-white border border-slate-200 rounded hover:bg-slate-50 disabled:opacity-50 transition-colors">尾页</button>
-            </div>
+        <!-- Token消耗 -->
+        <div class="dashboard-card rounded-xl p-5 animate-fade-up delay-300">
+          <div class="text-sm text-slate-500 mb-2">Token消耗</div>
+          <div class="text-2xl font-bold text-slate-900 mb-2">325K</div>
+          <div class="flex items-center gap-1 text-xs">
+            <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+            <span class="text-emerald-400 font-medium">3.1%</span>
+            <span class="text-slate-500">较昨日</span>
           </div>
         </div>
-      </section>
+        <!-- 平均 RPM -->
+        <div class="dashboard-card rounded-xl p-5 animate-fade-up" style="animation-delay:0.32s">
+          <div class="text-sm text-slate-500 mb-2">平均 RPM</div>
+          <div class="text-2xl font-bold text-slate-900 mb-2">2.018</div>
+          <div class="flex items-center gap-1 text-xs">
+            <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+            <span class="text-emerald-400 font-medium">5.7%</span>
+            <span class="text-slate-500">较昨日</span>
+          </div>
+        </div>
+        <!-- 平均 TPM -->
+        <div class="dashboard-card rounded-xl p-5 animate-fade-up" style="animation-delay:0.36s">
+          <div class="text-sm text-slate-500 mb-2">平均 TPM</div>
+          <div class="text-2xl font-bold text-slate-900 mb-2">216,839</div>
+          <div class="flex items-center gap-1 text-xs">
+            <svg class="w-3 h-3 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path></svg>
+            <span class="text-emerald-400 font-medium">2.3%</span>
+            <span class="text-slate-500">较昨日</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Middle Section: 模型调用趋势 -->
+      <div class="mb-5 animate-fade-up delay-200">
+        <div class="dashboard-card rounded-xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <h3 class="text-base font-bold text-slate-900">模型调用趋势</h3>
+              <span class="px-2 py-0.5 text-xs text-blue-600 bg-blue-50 border border-blue-200 rounded">共 6 个模型</span>
+            </div>
+          </div>
+          <div id="model-trend-chart" class="w-full h-96"></div>
+        </div>
+      </div>
+
+      <!-- Bottom Section -->
+      <div class="dashboard-card rounded-xl p-5 animate-fade-up delay-300">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-base font-bold text-slate-900">额度消耗 · 近12小时趋势</h3>
+          <div class="flex items-center gap-4 text-xs">
+            <div class="flex items-center gap-1.5"><span class="w-3 h-1 bg-blue-500 rounded"></span><span class="text-slate-500">充值额度</span></div>
+            <div class="flex items-center gap-1.5"><span class="w-3 h-1 bg-emerald-500 rounded"></span><span class="text-slate-500">权益额度</span></div>
+          </div>
+        </div>
+        <div id="quota-trend-chart" class="w-full h-56"></div>
+      </div>
+
+      <!-- 员工消耗统计 -->
+      <div class="dashboard-card rounded-xl p-5 mt-5 animate-fade-up delay-300">
+        <div class="mb-4">
+          <h3 class="text-base font-bold text-slate-900">员工消耗统计</h3>
+          <p class="text-xs text-slate-500 mt-1">总计：¥110.90</p>
+        </div>
+        <div id="employee-consumption-chart" class="w-full h-[420px]"></div>
+      </div>
     </main>
   </div>
 
-  <!-- Modal: 新增成员 -->
-  <div id="modal-add-member" class="modal hidden fixed inset-0 z-50">
-    <div class="modal-backdrop absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-      <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-lg overflow-hidden opacity-0 scale-95 transition-all duration-200">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h3 class="text-base font-semibold text-slate-900">新增成员</h3>
-          <button class="close-modal text-slate-400 hover:text-slate-600 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-          </button>
-        </div>
-        <div class="px-6 py-5 space-y-4">
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">部门<span class="text-rose-500">*</span></label>
-            <select id="add-member-dept" class="w-full px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all text-slate-600">
-              <option>请选择部门</option>
-              <option>广东冲电狼科技有限公司</option>
-              <option>运营部</option>
-              <option>技术部</option>
-              <option>产品部</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">员工名称<span class="text-rose-500">*</span></label>
-            <input type="text" placeholder="请输入成员名称" class="w-full px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">
-              用户名<span class="text-rose-500">*</span>
-              <span class="text-xs font-normal text-slate-400 ml-1">（用户名与手机号码均可登录）</span>
-            </label>
-            <input type="text" placeholder="请输入用户名" class="w-full px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">手机号码<span class="text-rose-500">*</span></label>
-            <input type="text" placeholder="请输入手机号码" class="w-full px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">密码<span class="text-rose-500">*</span></label>
-            <input type="text" value="xiaomao" class="w-full px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all" />
-          </div>
-          <div>
-            <label class="inline-flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-              额度类型<span class="text-rose-500">*</span>
-              <span class="px-1.5 py-0.5 text-[10px] font-bold text-slate-700 bg-yellow-200 rounded">15</span>
-            </label>
-            <div class="grid grid-cols-2 gap-3">
-              <label class="quota-option cursor-pointer relative">
-                <input type="radio" name="quota_type" value="fixed" checked class="peer sr-only">
-                <div class="p-3 rounded-lg border border-slate-200 bg-white peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all">
-                  <div class="text-sm font-semibold text-slate-900 mb-1">固定金额</div>
-                  <div class="text-xs text-slate-500">设置成员每月固定最高的可使用金额</div>
-                </div>
-              </label>
-              <label class="quota-option cursor-pointer relative">
-                <input type="radio" name="quota_type" value="unlimited" class="peer sr-only">
-                <div class="p-3 rounded-lg border border-slate-200 bg-white peer-checked:border-brand-500 peer-checked:bg-brand-50 transition-all">
-                  <div class="text-sm font-semibold text-slate-900 mb-1">无上限</div>
-                  <div class="text-xs text-slate-500">成员使用额度不受限制</div>
-                </div>
-              </label>
-            </div>
-          </div>
-          <div id="fixed-quota-field">
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">月固定额度<span class="text-rose-500">*</span></label>
-            <input type="text" placeholder="请输入月固定额度" class="w-full px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all" />
-          </div>
-        </div>
-        <div class="flex items-center justify-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
-          <button class="px-6 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm shadow-brand-500/20 transition-colors">提交</button>
-          <button class="close-modal px-6 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">取消</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: 创建子部门 -->
-  <div id="modal-create-dept" class="modal hidden fixed inset-0 z-50">
-    <div class="modal-backdrop absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-      <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden opacity-0 scale-95 transition-all duration-200">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h3 class="text-base font-semibold text-slate-900">创建子部门</h3>
-          <button class="close-modal text-slate-400 hover:text-slate-600 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-          </button>
-        </div>
-        <div class="px-6 py-5 space-y-4">
-          <div class="text-sm text-slate-700"><span class="text-slate-500">父级部门：</span>广东冲电狼科技有限公司</div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">子部门名称<span class="text-rose-500">*</span></label>
-            <input type="text" placeholder="请输入子部门名称" class="w-full px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all" />
-          </div>
-        </div>
-        <div class="flex items-center justify-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
-          <button class="px-6 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm shadow-brand-500/20 transition-colors">确认</button>
-          <button class="close-modal px-6 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">取消</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: 修改子部门 -->
-  <div id="modal-edit-dept" class="modal hidden fixed inset-0 z-50">
-    <div class="modal-backdrop absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-      <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden opacity-0 scale-95 transition-all duration-200">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h3 class="text-base font-semibold text-slate-900">修改子部门</h3>
-          <button class="close-modal text-slate-400 hover:text-slate-600 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-          </button>
-        </div>
-        <div class="px-6 py-5 space-y-4">
-          <div class="text-sm text-slate-700"><span class="text-slate-500">父级部门：</span>广东冲电狼科技有限公司</div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">子部门名称<span class="text-rose-500">*</span></label>
-            <input type="text" placeholder="请输入子部门名称" class="w-full px-3 py-2 text-sm bg-slate-100 border border-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 focus:bg-white transition-all" />
-          </div>
-        </div>
-        <div class="flex items-center justify-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
-          <button class="px-6 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm shadow-brand-500/20 transition-colors">确认</button>
-          <button class="close-modal px-6 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">取消</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal: 删除子部门 -->
-  <div id="modal-delete-dept" class="modal hidden fixed inset-0 z-50">
-    <div class="modal-backdrop absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-      <div class="modal-content bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden opacity-0 scale-95 transition-all duration-200">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-          <h3 class="text-base font-semibold text-slate-900">删除子部门</h3>
-          <button class="close-modal text-slate-400 hover:text-slate-600 transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
-          </button>
-        </div>
-        <div class="px-6 py-8 text-center">
-          <p class="text-base font-medium text-slate-900 mb-2">是否确认删除所选部门？</p>
-          <p class="text-sm text-slate-500">
-            删除前请将部门成员转移到其他部门
-            <span class="inline-flex items-center justify-center w-5 h-5 ml-1 text-[10px] font-bold text-slate-700 bg-yellow-200 rounded">14</span>
-          </p>
-        </div>
-        <div class="flex items-center justify-center gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
-          <button class="px-6 py-2 text-sm font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg shadow-sm shadow-brand-500/20 transition-colors">确认</button>
-          <button class="close-modal px-6 py-2 text-sm font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors">取消</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
-    // Tab switching
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    const tabPanels = document.querySelectorAll('.tab-panel');
-    tabBtns.forEach(btn => {
+    // 时间快捷筛选
+    const timeFilterBtns = document.querySelectorAll('.time-filter-btn');
+    const customDateRange = document.getElementById('custom-date-range');
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const queryBtn = document.getElementById('query-btn');
+
+    timeFilterBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        const tab = btn.dataset.tab;
-        tabBtns.forEach(b => {
-          b.classList.remove('text-brand-600', 'border-brand-500', 'font-semibold');
-          b.classList.add('text-slate-500', 'border-transparent', 'font-medium');
+        timeFilterBtns.forEach(b => {
+          b.classList.remove('bg-brand-500', 'text-white');
+          b.classList.add('text-slate-600', 'hover:bg-slate-50');
         });
-        btn.classList.remove('text-slate-500', 'border-transparent', 'font-medium');
-        btn.classList.add('text-brand-600', 'border-brand-500', 'font-semibold');
-        tabPanels.forEach(p => p.classList.add('hidden'));
-        document.getElementById(tab + '-panel').classList.remove('hidden');
+        btn.classList.remove('text-slate-600', 'hover:bg-slate-50');
+        btn.classList.add('bg-brand-500', 'text-white');
+        if (btn.dataset.range === 'custom') {
+          customDateRange.classList.remove('hidden');
+          customDateRange.classList.add('flex');
+        } else {
+          customDateRange.classList.add('hidden');
+          customDateRange.classList.remove('flex');
+        }
       });
     });
 
-    // Action dropdowns
-    document.querySelectorAll('.action-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const dropdown = btn.nextElementSibling;
-        const isHidden = dropdown.classList.contains('hidden');
-        document.querySelectorAll('.action-dropdown, .tree-dropdown').forEach(d => d.classList.add('hidden'));
-        if (isHidden) dropdown.classList.remove('hidden');
-      });
-    });
-
-    // Team tree dropdowns
-    document.querySelectorAll('.more-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const dropdown = btn.nextElementSibling;
-        const isHidden = dropdown.classList.contains('hidden');
-        document.querySelectorAll('.action-dropdown, .tree-dropdown').forEach(d => d.classList.add('hidden'));
-        if (isHidden) dropdown.classList.remove('hidden');
-      });
-    });
-
-    document.addEventListener('click', () => {
-      document.querySelectorAll('.action-dropdown, .tree-dropdown').forEach(d => d.classList.add('hidden'));
-    });
-
-    // Modal handling
-    function openModal(id) {
-      const modal = document.getElementById(id);
-      if (!modal) return;
-      modal.classList.remove('hidden');
-      // Trigger reflow for transition
-      void modal.offsetWidth;
-      const backdrop = modal.querySelector('.modal-backdrop');
-      const content = modal.querySelector('.modal-content');
-      if (backdrop) backdrop.classList.remove('opacity-0');
-      if (content) {
-        content.classList.remove('opacity-0', 'scale-95');
-        content.classList.add('opacity-100', 'scale-100');
+    queryBtn.addEventListener('click', () => {
+      const start = startDateInput.value;
+      const end = endDateInput.value;
+      if (!start || !end) {
+        alert('请选择开始日期和结束日期');
+        return;
       }
-    }
+      console.log('查询日期范围：', start, '至', end);
+    });
 
-    function closeModal(modal) {
-      const backdrop = modal.querySelector('.modal-backdrop');
-      const content = modal.querySelector('.modal-content');
-      if (backdrop) backdrop.classList.add('opacity-0');
-      if (content) {
-        content.classList.remove('opacity-100', 'scale-100');
-        content.classList.add('opacity-0', 'scale-95');
-      }
-      setTimeout(() => {
-        modal.classList.add('hidden');
-      }, 200);
-    }
+    // 公共图表主题色
+    const axisColor = '#94a3b8';
+    const splitLineColor = '#e2e8f0';
+    const tooltipBg = 'rgba(255, 255, 255, 0.95)';
+    const tooltipBorder = '#e2e8f0';
+    const hours = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
 
-    document.querySelectorAll('[data-open-modal]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const modalId = btn.dataset.openModal;
-        openModal(modalId);
-        // Pre-select department for add member modal when triggered from tree
-        if (modalId === 'modal-add-member') {
-          const deptSelect = document.getElementById('add-member-dept');
-          if (deptSelect) {
-            deptSelect.value = btn.dataset.dept || '请选择部门';
+    // 模型调用趋势（6 个模型）
+    const modelTrendChart = echarts.init(document.getElementById('model-trend-chart'));
+    const modelSeries = [
+      { name: 'GPT-4o 486 次', color: '#3b82f6', values: [24,30,32,40,48,56,66,68,74,80,78,82] },
+      { name: 'GPT-3.5 312 次', color: '#10b981', values: [26,32,28,34,42,50,60,62,68,74,70,76] },
+      { name: 'Claude 3 245 次', color: '#f59e0b', values: [12,16,18,22,28,34,38,40,46,52,48,54] },
+      { name: 'Gemini Pro 168 次', color: '#8b5cf6', values: [8,10,14,18,22,26,30,34,38,42,40,44] },
+      { name: 'DeepSeek 98 次', color: '#ef4444', values: [6,8,10,14,18,22,26,28,32,36,34,38] },
+      { name: '文心一言 36 次', color: '#64748b', values: [4,6,8,10,12,16,18,20,22,24,26,28] }
+    ];
+    const modelTrendOption = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: tooltipBg,
+        borderColor: tooltipBorder,
+        textStyle: { color: '#334155' },
+        axisPointer: { type: 'line', lineStyle: { color: '#94a3b8', type: 'dashed' } }
+      },
+      legend: {
+        data: modelSeries.map(s => s.name),
+        bottom: 0,
+        textStyle: { color: '#64748b', fontSize: 11 },
+        itemWidth: 12,
+        itemHeight: 12,
+        icon: 'circle'
+      },
+      grid: { left: 44, right: 20, top: 20, bottom: 56, containLabel: false },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: hours,
+        axisLine: { lineStyle: { color: axisColor } },
+        axisLabel: { color: '#64748b', fontSize: 11 },
+        splitLine: { show: true, lineStyle: { color: splitLineColor, type: 'dashed' } }
+      },
+      yAxis: {
+        type: 'value',
+        max: 100,
+        axisLine: { show: false },
+        axisLabel: { color: '#64748b', fontSize: 11 },
+        splitLine: { lineStyle: { color: splitLineColor } }
+      },
+      series: modelSeries.map(m => ({
+        name: m.name,
+        type: 'line',
+        smooth: false,
+        symbol: 'circle',
+        symbolSize: 5,
+        data: m.values,
+        itemStyle: { color: m.color, borderColor: '#fff', borderWidth: 1.5 },
+        lineStyle: { width: 2.5, color: m.color },
+        emphasis: { scale: 1.5 }
+      }))
+    };
+    modelTrendChart.setOption(modelTrendOption);
+
+    // 额度消耗·近12小时趋势
+    const quotaTrendChart = echarts.init(document.getElementById('quota-trend-chart'));
+    const quotaTrendOption = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'axis',
+        backgroundColor: tooltipBg,
+        borderColor: tooltipBorder,
+        textStyle: { color: '#334155' },
+        formatter: function(params) {
+          let html = '<div style="font-weight:500;margin-bottom:4px;">' + params[0].axisValue + '</div>';
+          params.forEach(p => {
+            const val = (typeof p.value === 'number') ? p.value.toFixed(4) : p.value;
+            html += '<div style="display:flex;align-items:center;gap:6px;margin-top:4px;">' + p.marker + '<span style="flex:1;">' + p.seriesName + '</span><span style="font-weight:600;">' + val + '</span></div>';
+          });
+          return html;
+        }
+      },
+      grid: { left: 50, right: 20, top: 20, bottom: 30, containLabel: false },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: hours,
+        axisLine: { lineStyle: { color: axisColor } },
+        axisLabel: { color: '#64748b', fontSize: 11 },
+        splitLine: { show: true, lineStyle: { color: splitLineColor, type: 'dashed' } }
+      },
+      yAxis: {
+        type: 'value',
+        axisLine: { show: false },
+        axisLabel: { color: '#64748b', fontSize: 11 },
+        splitLine: { lineStyle: { color: splitLineColor } }
+      },
+      series: [
+        {
+          name: '充值额度',
+          type: 'line',
+          smooth: true,
+          data: [12.3456,18.2341,16.8972,22.1234,26.4567,24.7890,28.3456,30.1234,32.5678,34.8901,36.2345,40.6789],
+          itemStyle: { color: '#3b82f6' },
+          lineStyle: { width: 2.5, color: '#3b82f6' },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0,0,0,1,[
+              { offset: 0, color: 'rgba(59,130,246,0.4)' },
+              { offset: 1, color: 'rgba(59,130,246,0.02)' }
+            ])
+          }
+        },
+        {
+          name: '权益额度',
+          type: 'line',
+          smooth: true,
+          data: [10.1234,14.5678,18.9012,16.3456,20.7890,22.2345,20.6789,24.1234,26.5678,28.9012,30.3456,34.7890],
+          itemStyle: { color: '#10b981' },
+          lineStyle: { width: 2.5, color: '#10b981', type: 'dashed' },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0,0,0,1,[
+              { offset: 0, color: 'rgba(16,185,129,0.25)' },
+              { offset: 1, color: 'rgba(16,185,129,0.02)' }
+            ])
           }
         }
-        // Hide any open dropdowns
-        document.querySelectorAll('.action-dropdown, .tree-dropdown').forEach(d => d.classList.add('hidden'));
-      });
-    });
+      ]
+    };
+    quotaTrendChart.setOption(quotaTrendOption);
 
-    document.querySelectorAll('.close-modal').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const modal = btn.closest('.modal');
-        closeModal(modal);
-      });
-    });
-
-    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-      backdrop.addEventListener('click', () => {
-        const modal = backdrop.closest('.modal');
-        closeModal(modal);
-      });
-    });
-
-    // Quota type toggle in add member modal
-    const quotaInputs = document.querySelectorAll('input[name="quota_type"]');
-    const fixedQuotaField = document.getElementById('fixed-quota-field');
-    quotaInputs.forEach(input => {
-      input.addEventListener('change', () => {
-        if (input.value === 'fixed' && input.checked) {
-          fixedQuotaField.classList.remove('hidden');
-        } else if (input.value === 'unlimited' && input.checked) {
-          fixedQuotaField.classList.add('hidden');
+    // 员工消耗统计
+    const employeeConsumptionChart = echarts.init(document.getElementById('employee-consumption-chart'));
+    const employeeData = [
+      { name: '180', value: 27.91, color: '#3b82f6' },
+      { name: '黄意娴', value: 22.86, color: '#ef4444' },
+      { name: '王林锋', value: 19.36, color: '#10b981' },
+      { name: '徐心语', value: 15.86, color: '#f59e0b' },
+      { name: '黄沛宁', value: 14.87, color: '#8b5cf6' },
+      { name: '王燕', value: 7.79, color: '#ec4899' },
+      { name: '罗培明', value: 1.18, color: '#06b6d4' },
+      { name: '王刚', value: 0.45, color: '#d97706' },
+      { name: '翟建梅', value: 0.32, color: '#6366f1' },
+      { name: 'xiaomao', value: 0.31, color: '#14b8a6' }
+    ];
+    const employeeConsumptionOption = {
+      backgroundColor: 'transparent',
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+        backgroundColor: tooltipBg,
+        borderColor: tooltipBorder,
+        textStyle: { color: '#334155' },
+        formatter: '{b}: ¥{c}'
+      },
+      grid: { left: 80, right: 80, top: 10, bottom: 10, containLabel: false },
+      xAxis: {
+        type: 'value',
+        axisLine: { show: false },
+        axisLabel: { show: false },
+        splitLine: { show: false }
+      },
+      yAxis: {
+        type: 'category',
+        data: employeeData.map(d => d.name),
+        inverse: true,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: { color: '#475569', fontSize: 12 }
+      },
+      series: [{
+        type: 'bar',
+        data: employeeData.map(d => ({ value: d.value, itemStyle: { color: d.color, borderRadius: [0, 4, 4, 0] } })),
+        barWidth: 18,
+        label: {
+          show: true,
+          position: 'right',
+          color: '#475569',
+          fontSize: 12,
+          formatter: '¥{c}'
         }
-      });
+      }]
+    };
+    employeeConsumptionChart.setOption(employeeConsumptionOption);
+
+    // Resize
+    window.addEventListener('resize', () => {
+      modelTrendChart.resize();
+      quotaTrendChart.resize();
+      employeeConsumptionChart.resize();
     });
   </script>
 </body>
